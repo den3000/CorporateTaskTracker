@@ -1,5 +1,6 @@
 package ru.den.writes.code
 
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -15,6 +16,10 @@ fun Application.module() {
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
+        }
+        
+        get("/api/ping") {
+            call.respondText("pong", status = HttpStatusCode.OK)
         }
     }
 }
