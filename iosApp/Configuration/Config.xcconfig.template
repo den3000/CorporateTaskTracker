@@ -1,4 +1,5 @@
-TEAM_ID=
+// Скопируйте этот файл, переименуйте в Config.xcconfig и вставьте свой TEAM_ID
+TEAM_ID = XXXXXXXXXX
 
 PRODUCT_NAME=CorporateTaskTracker
 PRODUCT_BUNDLE_IDENTIFIER=ru.den.writes.code.CorporateTaskTracker$(TEAM_ID)
