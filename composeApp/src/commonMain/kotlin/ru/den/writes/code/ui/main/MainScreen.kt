@@ -19,11 +19,12 @@ import androidx.compose.ui.Modifier
 import corporatetasktracker.composeapp.generated.resources.Res
 import corporatetasktracker.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.Greeting
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel,
+    viewModel: MainViewModel = koinViewModel(),
     paddingValues: PaddingValues = PaddingValues()
 ) {
     Column(

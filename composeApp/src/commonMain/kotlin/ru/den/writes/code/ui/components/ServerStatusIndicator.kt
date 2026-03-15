@@ -13,11 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.network.ServerStatus
 
 @Composable
-fun ServerStatusIndicator(viewModel: ServerStatusViewModel) {
+fun ServerStatusIndicator(
+    viewModel: ServerStatusViewModel = koinViewModel()
+) {
     val status by viewModel.status.collectAsState()
     ServerStatusIndicatorContent(status)
 }
