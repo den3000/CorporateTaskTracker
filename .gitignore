@@ -20,3 +20,5 @@ node_modules/
 
 # Защищаем локальные настройки Xcode
 Config.xcconfig
+
+/PLANS
