@@ -5,6 +5,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import io.ktor.client.HttpClient
+import org.koin.compose.KoinApplication
+import ru.den.writes.code.di.appModule
 import ru.den.writes.code.network.NetworkMonitor
 import ru.den.writes.code.ui.components.ServerStatusIndicator
 import ru.den.writes.code.ui.main.MainScreen
@@ -20,16 +22,20 @@ val mainViewModel = MainViewModel()
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        Scaffold(
-            topBar = {
-                ServerStatusIndicator(viewModel = serverStatusViewModel)
+    KoinApplication(application = {
+        modules(appModule)
+    }) {
+        MaterialTheme {
+            Scaffold(
+                topBar = {
+                    ServerStatusIndicator(viewModel = serverStatusViewModel)
+                }
+            ) { paddingValues ->
+                MainScreen(
+                    viewModel = mainViewModel,
+                    paddingValues = paddingValues
+                )
             }
-        ) { paddingValues ->
-            MainScreen(
-                viewModel = mainViewModel,
-                paddingValues = paddingValues
-            )
         }
     }
 }

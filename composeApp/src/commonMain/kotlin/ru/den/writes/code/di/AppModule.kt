@@ -1,7 +1,6 @@
 package ru.den.writes.code.di
 
 import io.ktor.client.HttpClient
-import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import ru.den.writes.code.ServerStatusViewModel
@@ -16,10 +15,4 @@ val appModule = module {
     // ViewModels
     viewModelOf(::ServerStatusViewModel)
     viewModelOf(::MainViewModel)
-}
-
-fun initKoin() {
-    startKoin {
-        modules(appModule)
-    }
 }
