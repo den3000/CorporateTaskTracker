@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import corporatetasktracker.composeapp.generated.resources.Res
 import corporatetasktracker.composeapp.generated.resources.server_status_connecting
 import corporatetasktracker.composeapp.generated.resources.server_status_offline
@@ -33,22 +35,31 @@ fun ServerStatusIndicator(
 
 @Composable
 private fun ServerStatusIndicatorContent(status: ServerStatus) {
+    // Используем семантические цвета из MaterialTheme, а не хардкод
     val (color, textRes) = when (status) {
-        ServerStatus.CONNECTING -> Color.Gray to Res.string.server_status_connecting
-        ServerStatus.ONLINE -> Color.Green to Res.string.server_status_online
-        ServerStatus.OFFLINE -> Color.Red to Res.string.server_status_offline
+        ServerStatus.CONNECTING -> MaterialTheme.colorScheme.secondary to Res.string.server_status_connecting
+        ServerStatus.ONLINE -> MaterialTheme.colorScheme.primary to Res.string.server_status_online
+        ServerStatus.OFFLINE -> MaterialTheme.colorScheme.error to Res.string.server_status_offline
+    }
+    
+    // Текст должен читаться поверх фона (используем On-цвета)
+    val textColor = when (status) {
+        ServerStatus.CONNECTING -> MaterialTheme.colorScheme.onSecondary
+        ServerStatus.ONLINE -> MaterialTheme.colorScheme.onPrimary
+        ServerStatus.OFFLINE -> MaterialTheme.colorScheme.onError
     }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(color)
-            .windowInsetsPadding(WindowInsets.statusBars),
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = stringResource(textRes),
-            color = Color.White,
+            color = textColor,
             style = MaterialTheme.typography.labelMedium
         )
     }
