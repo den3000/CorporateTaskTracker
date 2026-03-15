@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CorporateTaskTracker</string>
+    <string name="btn_click_me">Click me!</string>
+
+    <!-- Server Status Indicator -->
+    <string name="server_status_connecting">Connecting to server...</string>
+    <string name="server_status_online">Server available (Online)</string>
+    <string name="server_status_offline">Working locally (Offline)</string>
+</resources>

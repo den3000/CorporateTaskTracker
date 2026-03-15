@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Корпоративный Трекер Задач</string>
+    <string name="btn_click_me">Нажми меня!</string>
+
+    <!-- Server Status Indicator -->
+    <string name="server_status_connecting">Подключение к серверу...</string>
+    <string name="server_status_online">Сервер доступен (Online)</string>
+    <string name="server_status_offline">Работаем локально (Offline)</string>
+</resources>
