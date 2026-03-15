@@ -2,8 +2,10 @@ package ru.den.writes.code.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import corporatetasktracker.composeapp.generated.resources.Res
 import corporatetasktracker.composeapp.generated.resources.server_status_connecting
 import corporatetasktracker.composeapp.generated.resources.server_status_offline
@@ -42,7 +43,7 @@ private fun ServerStatusIndicatorContent(status: ServerStatus) {
         modifier = Modifier
             .fillMaxWidth()
             .background(color)
-            .padding(8.dp),
+            .windowInsetsPadding(WindowInsets.statusBars),
         contentAlignment = Alignment.Center
     ) {
         Text(
