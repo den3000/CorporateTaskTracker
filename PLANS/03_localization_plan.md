@@ -19,7 +19,7 @@
 - Запуск Gradle-таски для генерации KMP-кода ресурсов (`Res.string...`).
 - **Ожидаем аппрув -> Выполняем `git commit`**
 
-## [ОЖИДАЕТ] Этап 3: Рефакторинг UI (Использование stringResource)
+## [ВЫПОЛНЕНО] Этап 3: Рефакторинг UI (Использование stringResource)
 **Задача:** Заменить хардкод в компонентах на вызовы KMP ресурсов.
 - Обновление `ServerStatusIndicator.kt`: замена хардкода на `stringResource(Res.string.server_status_...)`.
 - Обновление `MainScreen.kt`: замена текста кнопки на `stringResource(Res.string.btn_click_me)` и т.д.

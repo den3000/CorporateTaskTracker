@@ -13,6 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import corporatetasktracker.composeapp.generated.resources.Res
+import corporatetasktracker.composeapp.generated.resources.server_status_connecting
+import corporatetasktracker.composeapp.generated.resources.server_status_offline
+import corporatetasktracker.composeapp.generated.resources.server_status_online
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.network.ServerStatus
@@ -27,10 +32,10 @@ fun ServerStatusIndicator(
 
 @Composable
 private fun ServerStatusIndicatorContent(status: ServerStatus) {
-    val (color, text) = when (status) {
-        ServerStatus.CONNECTING -> Color.Gray to "Подключение к серверу..."
-        ServerStatus.ONLINE -> Color(0xFF4CAF50) to "Сервер доступен (Online)"
-        ServerStatus.OFFLINE -> Color(0xFFF44336) to "Работаем локально (Offline)"
+    val (color, textRes) = when (status) {
+        ServerStatus.CONNECTING -> Color.Gray to Res.string.server_status_connecting
+        ServerStatus.ONLINE -> Color.Green to Res.string.server_status_online
+        ServerStatus.OFFLINE -> Color.Red to Res.string.server_status_offline
     }
 
     Box(
@@ -40,6 +45,10 @@ private fun ServerStatusIndicatorContent(status: ServerStatus) {
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = Color.White, style = MaterialTheme.typography.labelMedium)
+        Text(
+            text = stringResource(textRes),
+            color = Color.White,
+            style = MaterialTheme.typography.labelMedium
+        )
     }
 }

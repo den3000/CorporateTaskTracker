@@ -17,8 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import corporatetasktracker.composeapp.generated.resources.Res
+import corporatetasktracker.composeapp.generated.resources.btn_click_me
 import corporatetasktracker.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.Greeting
 
@@ -36,7 +38,7 @@ fun MainScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(onClick = { viewModel.toggleContent() }) {
-            Text("Click me!")
+            Text(stringResource(Res.string.btn_click_me))
         }
         AnimatedVisibility(viewModel.showContent) {
             val greeting = remember { Greeting().greet() }
