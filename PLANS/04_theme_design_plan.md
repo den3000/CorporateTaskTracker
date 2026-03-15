@@ -24,7 +24,7 @@
 - Определить размеры и вес для `displayLarge`, `titleMedium`, `bodyLarge`, `labelLarge` и т.д.
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 4: Сборка Theme.kt и интеграция в App.kt
+## [ВЫПОЛНЕНО] Этап 4: Сборка Theme.kt и интеграция в App.kt
 **Задача:** Создать компонент `AppTheme` и обернуть им приложение.
 - Написать Composable функцию `AppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit)`, которая будет переключать палитры в зависимости от системной темы.
 - Заменить стандартный вызов `MaterialTheme` в `App.kt` на наш новый `AppTheme`.
