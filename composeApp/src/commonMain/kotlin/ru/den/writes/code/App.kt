@@ -7,8 +7,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.di.appModule
+import ru.den.writes.code.navigation.AppNavigation
 import ru.den.writes.code.ui.components.ServerStatusIndicator
-import ru.den.writes.code.ui.settings.SettingsScreen
 import ru.den.writes.code.ui.settings.SettingsViewModel
 import ru.den.writes.code.ui.theme.AppTheme
 
@@ -29,11 +29,8 @@ fun App() {
                     ServerStatusIndicator()
                 }
             ) { paddingValues ->
-                // Временно показываем SettingsScreen напрямую.
-                // В Этапе 4 здесь появится NavHost, который свяжет 
-                // TaskListScreen, TaskDetailScreen и SettingsScreen.
-                SettingsScreen(
-                    viewModel = settingsViewModel,
+                AppNavigation(
+                    settingsViewModel = settingsViewModel,
                     paddingValues = paddingValues,
                     isDarkTheme = useDarkTheme
                 )

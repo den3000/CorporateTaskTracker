@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.network.NetworkMonitor
 import ru.den.writes.code.ui.settings.SettingsViewModel
+import ru.den.writes.code.ui.tasks.TaskDetailViewModel
 import ru.den.writes.code.ui.tasks.TaskListViewModel
 
 val appModule = module {
@@ -17,4 +18,7 @@ val appModule = module {
     viewModelOf(::ServerStatusViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::TaskListViewModel)
+    
+    // Передаем taskId как параметр в ViewModel
+    factory { (taskId: Int) -> TaskDetailViewModel(taskId) }
 }

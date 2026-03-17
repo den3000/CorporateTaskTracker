@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TaskDetailScreen(
-    taskId: Int,
+    viewModel: TaskDetailViewModel,
     paddingValues: PaddingValues = PaddingValues(),
     onBack: () -> Unit
 ) {
@@ -41,9 +41,9 @@ fun TaskDetailScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Здесь мы показываем переданный аргумент:
+        // Показываем аргумент из ViewModel
         Text(
-            text = "ID Задачи: $taskId",
+            text = "ID Задачи: ${viewModel.taskId}",
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.primary
         )
