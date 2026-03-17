@@ -21,7 +21,7 @@
 - Описание маршрута настроек: `@Serializable object SettingsRoute`.
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 3: Создание экранов (TaskListScreen, TaskDetailScreen, SettingsScreen)
+## [ВЫПОЛНЕНО] Этап 3: Создание экранов (TaskListScreen, TaskDetailScreen, SettingsScreen)
 **Задача:** Подготовить UI для новых экранов.
 - Текущий `MainScreen` -> `SettingsScreen` (и переименование `MainViewModel` -> `SettingsViewModel`).
 - Создаём новый `TaskListScreen` (с `TaskListViewModel`).

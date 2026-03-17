@@ -5,7 +5,8 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.network.NetworkMonitor
-import ru.den.writes.code.ui.main.MainViewModel
+import ru.den.writes.code.ui.settings.SettingsViewModel
+import ru.den.writes.code.ui.tasks.TaskListViewModel
 
 val appModule = module {
     // Сеть
@@ -14,5 +15,6 @@ val appModule = module {
 
     // ViewModels
     viewModelOf(::ServerStatusViewModel)
-    viewModelOf(::MainViewModel)
+    viewModelOf(::SettingsViewModel)
+    viewModelOf(::TaskListViewModel)
 }

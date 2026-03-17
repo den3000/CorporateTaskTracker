@@ -8,8 +8,8 @@ import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.di.appModule
 import ru.den.writes.code.ui.components.ServerStatusIndicator
-import ru.den.writes.code.ui.main.MainScreen
-import ru.den.writes.code.ui.main.MainViewModel
+import ru.den.writes.code.ui.settings.SettingsScreen
+import ru.den.writes.code.ui.settings.SettingsViewModel
 import ru.den.writes.code.ui.theme.AppTheme
 
 @Composable
@@ -18,8 +18,8 @@ fun App() {
     KoinApplication(application = {
         modules(appModule)
     }) {
-        val mainViewModel: MainViewModel = koinViewModel()
-        val useDarkTheme = mainViewModel.isDarkThemeOverride
+        val settingsViewModel: SettingsViewModel = koinViewModel()
+        val useDarkTheme = settingsViewModel.isDarkThemeOverride
             .collectAsState()
             .value ?: isSystemInDarkTheme()
 
@@ -29,8 +29,11 @@ fun App() {
                     ServerStatusIndicator()
                 }
             ) { paddingValues ->
-                MainScreen(
-                    viewModel = mainViewModel,
+                // Временно показываем SettingsScreen напрямую.
+                // В Этапе 4 здесь появится NavHost, который свяжет 
+                // TaskListScreen, TaskDetailScreen и SettingsScreen.
+                SettingsScreen(
+                    viewModel = settingsViewModel,
                     paddingValues = paddingValues,
                     isDarkTheme = useDarkTheme
                 )
