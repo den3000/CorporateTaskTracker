@@ -19,8 +19,9 @@ fun App() {
         modules(appModule)
     }) {
         val mainViewModel: MainViewModel = koinViewModel()
-        val systemDarkTheme = isSystemInDarkTheme()
-        val useDarkTheme = mainViewModel.isDarkThemeOverride ?: systemDarkTheme
+        val useDarkTheme = mainViewModel.isDarkThemeOverride
+            .collectAsState()
+            .value ?: isSystemInDarkTheme()
 
         AppTheme(darkTheme = useDarkTheme) {
             Scaffold(

@@ -1,29 +1,25 @@
 package ru.den.writes.code.ui.main
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel : ViewModel() {
 
-    var showContent by mutableStateOf(false)
-        private set
+    val showContent: StateFlow<Boolean>
+        field = MutableStateFlow(false)
 
-    // Состояние темы. 
-    // Null означает, что мы используем системную тему.
-    // True - принудительно темная, False - принудительно светлая.
-    var isDarkThemeOverride by mutableStateOf<Boolean?>(null)
-        private set
+    val isDarkThemeOverride: StateFlow<Boolean?>
+        field = MutableStateFlow<Boolean?>(null)
 
     fun toggleContent() {
-        showContent = !showContent
+        showContent.value = !showContent.value
     }
 
     fun toggleTheme(currentSystemIsDark: Boolean) {
         // Если ручное переопределение еще не задано, инвертируем системную тему.
         // Если уже задано - инвертируем его.
-        val currentIsDark = isDarkThemeOverride ?: currentSystemIsDark
-        isDarkThemeOverride = !currentIsDark
+        val currentIsDark = isDarkThemeOverride.value ?: currentSystemIsDark
+        isDarkThemeOverride.value = !currentIsDark
     }
 }
