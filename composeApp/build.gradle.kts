@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 val generateAppConfig by tasks.registering {
@@ -86,6 +87,9 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
+
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.navigation.compose)
 
                 implementation(projects.shared)
             }
