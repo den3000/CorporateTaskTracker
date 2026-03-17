@@ -36,7 +36,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
     paddingValues: PaddingValues = PaddingValues(),
     isDarkTheme: Boolean = false,
-    onBack: () -> Unit = {}
+    serverStatusContent: @Composable () -> Unit
 ) {
     val showContent by viewModel.showContent.collectAsState()
 
@@ -50,11 +50,7 @@ fun SettingsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Button(onClick = onBack) {
-            Text("← Назад")
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
+        serverStatusContent()
 
         Button(
             onClick = { viewModel.toggleTheme(isDarkTheme) },

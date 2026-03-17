@@ -2,13 +2,15 @@ package ru.den.writes.code
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.di.appModule
 import ru.den.writes.code.navigation.AppNavigation
-import ru.den.writes.code.ui.components.ServerStatusIndicator
+import ru.den.writes.code.ui.components.AppTopBar
 import ru.den.writes.code.ui.settings.SettingsViewModel
 import ru.den.writes.code.ui.theme.AppTheme
 
@@ -24,12 +26,17 @@ fun App() {
             .value ?: isSystemInDarkTheme()
 
         AppTheme(darkTheme = useDarkTheme) {
+            val navController = rememberNavController()
+
             Scaffold(
                 topBar = {
-                    ServerStatusIndicator()
+                    AppTopBar(
+                        navController = navController
+                    )
                 }
             ) { paddingValues ->
                 AppNavigation(
+                    navController = navController,
                     settingsViewModel = settingsViewModel,
                     paddingValues = paddingValues,
                     isDarkTheme = useDarkTheme

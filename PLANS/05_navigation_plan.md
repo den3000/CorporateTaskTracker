@@ -40,7 +40,16 @@
 - Не забываем про то, что смена темы должна работать на уровне всего приложения, и нужен hoisting для `SettingsViewModel`.
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 5: Слияние в основную ветку (Merge)
+## [ВЫПОЛНЕНО] Этап 5: Добавление Navigation Bar с кнопкой "Назад"
+**Задача:** Добавить полноценный `TopAppBar` из Material 3 (с тайтлом и кнопкой возврата).
+- В `AppNavigation` (или `App.kt`) вынести управление `TopAppBar` с отслеживанием текущего маршрута (`navController.currentBackStackEntryAsState()`).
+- В `TopAppBar` добавить кнопку "Назад", которая появляется, когда `navController.previousBackStackEntry != null` (или когда маршрут не `TaskListRoute`).
+- Интегрировать нашу плашку `ServerStatusIndicator` под или внутрь `TopAppBar`.
+- Убрать временные кнопки `← Назад` из центров экранов `SettingsScreen` и `TaskDetailScreen`.
+- Убедиться в корректности обработки системных отступов (`WindowInsets`).
+- **[Ожидаем аппрув -> Выполняем `git commit`]**
+
+## [ОЖИДАЕТ] Этап 6: Слияние в основную ветку (Merge)
 **Задача:** Влить фичу в основную ветку без Fast-Forward.
 - Переключение на основную ветку (`main` или `master`).
 - Выполнение команды `git merge --no-ff feature/navigation`.
