@@ -1,10 +1,10 @@
-package ru.den.writes.code.ui.main
+package ru.den.writes.code.ui.settings
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class MainViewModel : ViewModel() {
+class SettingsViewModel : ViewModel() {
 
     val showContent: StateFlow<Boolean>
         field = MutableStateFlow(false)
@@ -17,8 +17,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun toggleTheme(currentSystemIsDark: Boolean) {
-        // Если ручное переопределение еще не задано, инвертируем системную тему.
-        // Если уже задано - инвертируем его.
         val currentIsDark = isDarkThemeOverride.value ?: currentSystemIsDark
         isDarkThemeOverride.value = !currentIsDark
     }

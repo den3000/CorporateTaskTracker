@@ -1,4 +1,4 @@
-package ru.den.writes.code.ui.main
+package ru.den.writes.code.ui.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -32,10 +32,10 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.Greeting
 
 @Composable
-fun MainScreen(
-    viewModel: MainViewModel = koinViewModel(),
+fun SettingsScreen(
+    viewModel: SettingsViewModel = koinViewModel(),
     paddingValues: PaddingValues = PaddingValues(),
-    isDarkTheme: Boolean = false
+    isDarkTheme: Boolean = false,
 ) {
     val showContent by viewModel.showContent.collectAsState()
 
@@ -61,7 +61,7 @@ fun MainScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Основная кнопка
+        // Основная кнопка (тестовая)
         Button(onClick = { viewModel.toggleContent() }) {
             Text(stringResource(Res.string.btn_click_me))
         }

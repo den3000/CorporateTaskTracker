@@ -1,66 +1,44 @@
 package ru.den.writes.code.ui.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import corporatetasktracker.composeapp.generated.resources.Res
-import corporatetasktracker.composeapp.generated.resources.server_status_connecting
-import corporatetasktracker.composeapp.generated.resources.server_status_offline
-import corporatetasktracker.composeapp.generated.resources.server_status_online
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.network.ServerStatus
 
 @Composable
 fun ServerStatusIndicator(
+    modifier: Modifier = Modifier,
     viewModel: ServerStatusViewModel = koinViewModel()
 ) {
     val status by viewModel.status.collectAsState()
-    ServerStatusIndicatorContent(status)
-}
-
-@Composable
-private fun ServerStatusIndicatorContent(status: ServerStatus) {
-    // Используем семантические цвета из MaterialTheme, а не хардкод
-    val (color, textRes) = when (status) {
-        ServerStatus.CONNECTING -> MaterialTheme.colorScheme.secondary to Res.string.server_status_connecting
-        ServerStatus.ONLINE -> MaterialTheme.colorScheme.primary to Res.string.server_status_online
-        ServerStatus.OFFLINE -> MaterialTheme.colorScheme.error to Res.string.server_status_offline
-    }
     
-    // Текст должен читаться поверх фона (используем On-цвета)
-    val textColor = when (status) {
-        ServerStatus.CONNECTING -> MaterialTheme.colorScheme.onSecondary
-        ServerStatus.ONLINE -> MaterialTheme.colorScheme.onPrimary
-        ServerStatus.OFFLINE -> MaterialTheme.colorScheme.onError
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color)
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(textRes),
-            color = textColor,
-            style = MaterialTheme.typography.labelMedium
-        )
+    when (status) {
+        ServerStatus.CONNECTING -> {
+            Icon(
+                imageVector = Icons.Default.QuestionMark,
+                contentDescription = "Подключение к серверу",
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = modifier
+            )
+        }
+        ServerStatus.OFFLINE -> {
+            Icon(
+                imageVector = Icons.Default.CloudOff,
+                contentDescription = "Нет соединения с сервером",
+                tint = MaterialTheme.colorScheme.error,
+                modifier = modifier
+            )
+        }
+        ServerStatus.ONLINE -> {
+            // Если онлайн - ничего не рисуем (занимает 0 пикселей)
+        }
     }
 }
