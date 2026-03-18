@@ -11,55 +11,49 @@
 - Создание пакета `domain/model`.
 - Добавление `data class Task` (с полями: `id`, `title`, `description`, `isCompleted`).
 - Создание перечисления `TaskPriority` (Low, Medium, High) или `TaskStatus` (опционально).
-- **[Ожидаем аппрув -> Выполняем `git commit`]**
 
 ## [ВЫПОЛНЕНО] Этап 2: Настройка TaskListViewModel
 **Задача:** Подготовить фейковые данные и логику для списка.
 - В `TaskListViewModel` добавить `StateFlow<List<Task>>`.
 - Инициализировать список 3-4 хардкодными ("заглушечными") задачами.
 - Написать метод `toggleTaskCompletion(taskId: Int)` для отметки задачи выполненной.
-- **[Ожидаем аппрув -> Выполняем `git commit`]**
 
 ## [ВЫПОЛНЕНО] Этап 3: Верстка TaskListScreen (Список задач)
 **Задача:** Вывести задачи в `LazyColumn`.
 - Создать компонент `TaskItem` (карточка задачи с `Checkbox` и текстом).
 - Обернуть `TaskItem` в кликабельную карточку (переход на детали).
 - В `TaskListScreen` добавить `LazyColumn` и использовать `TaskItem` для каждого элемента из ViewModel.
-- Добавить `FloatingActionButton` (FAB) со знаком `+` для перехода на создание новой задачи (будем передавать `taskId = -1` или `0` как признак новой задачи).
-- **[Ожидаем аппрув -> Выполняем `git commit`]**
+- Добавить `FloatingActionButton` (FAB) со знаком `+` для перехода на создание новой задачи.
 
 ## [ВЫПОЛНЕНО] Этап 4: Настройка TaskDetailViewModel
 **Задача:** Управление состоянием формы задачи.
 - В `TaskDetailViewModel` добавить поля ввода (`MutableStateFlow<String>` для title и description).
 - Если `taskId > 0`, загружать "фейковые" данные для редактирования. Если `taskId <= 0` — оставлять поля пустыми для новой задачи.
 - Метод `saveTask()` (пока будет просто выводить лог или очищать поля).
-- **[Ожидаем аппрув -> Выполняем `git commit`]**
 
 ## [ВЫПОЛНЕНО] Этап 5: Верстка TaskDetailScreen (Форма создания/редактирования)
 **Задача:** Создать UI формы задачи.
 - Добавить `OutlinedTextField` для ввода заголовка задачи.
 - Добавить `OutlinedTextField` для ввода описания (многострочный).
 - Добавить кнопку "Сохранить" (`Button`), которая вызывает метод ViewModel и делает `onBack` (возврат на предыдущий экран).
-- **[Ожидаем аппрув -> Выполняем `git commit`]**
 
 ## [ВЫПОЛНЕНО] Этап 6: Возврат результата на экран списка (Type-Safe + Serialization)
 **Задача:** Уведомлять `TaskListScreen` об успешном создании или обновлении задачи.
 - Сделать `Task` и `TaskPriority` сериализуемыми (`@Serializable`).
 - Изменить `saveTask()` во ViewModel так, чтобы он возвращал объект `Task`.
-- В `AppNavigation` при вызове `onTaskSaved` сериализовывать `Task` в JSON и класть его в `SavedStateHandle` предыдущего экрана (`navController.previousBackStackEntry`).
-- На экране `TaskListRoute` считывать JSON, десериализовывать в `Task` и вызывать метод `addOrUpdateTask` в `TaskListViewModel`.
-- **[Ожидаем аппрув -> Выполняем `git commit`]**
+- В `AppNavigation` при вызове `onTaskSaved` сериализовывать `Task` в JSON и класть его в `SavedStateHandle` предыдущего экрана.
+- На экране `TaskListRoute` считывать JSON, десериализувать в `Task` и вызывать метод `addOrUpdateTask` в `TaskListViewModel`.
 
 ## [ВЫПОЛНЕНО] Этап 7: Управление Статусом и Приоритетом задачи
 **Задача:** Добавить в `TaskDetailScreen` элементы управления для свойств `isCompleted` и `priority`.
 - В `TaskDetailViewModel` добавить `isCompleted` (`StateFlow<Boolean>`) и `taskPriority` (`StateFlow<TaskPriority>`) с поддержкой `explicit-backing-fields`.
 - Обновить метод `saveTask()`, чтобы он забирал актуальные значения `isCompleted` и `taskPriority`.
 - В `TaskDetailScreen` добавить `Row` с чекбоксом "Задача выполнена" (или свитчом).
-- В `TaskDetailScreen` добавить элемент выбора приоритета (например, 3 `FilterChip` / `SegmentedButton` или `DropdownMenu` для LOW, MEDIUM, HIGH).
-- **[Ожидаем аппрув -> Выполняем `git commit`]**
+- В `TaskDetailScreen` добавить элемент выбора приоритета.
 
-## [ОЖИДАЕТ] Этап 8: Слияние в основную ветку (Merge)
+## [ВЫПОЛНЕНО] Этап 8: Слияние в основную ветку (Merge)
 **Задача:** Влить фичу в основную ветку.
 - Переключение на основную ветку.
 - Выполнение команды `git merge --no-ff feature/task-ui`.
-- **Готово!**
+
+**Готово!**
