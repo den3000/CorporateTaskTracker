@@ -15,10 +15,11 @@ object TaskListRoute
 
 /**
  * Экран деталей задачи.
- * Принимает обязательный аргумент [taskId], поэтому это data class.
+ * Принимает опциональный аргумент сериализованной задачи [taskJson].
+ * Если он null или пустой - значит мы создаем новую задачу.
  */
 @Serializable
-data class TaskDetailRoute(val taskId: Int)
+data class TaskDetailRoute(val taskJson: String?)
 
 /**
  * Экран настроек (бывший MainScreen).

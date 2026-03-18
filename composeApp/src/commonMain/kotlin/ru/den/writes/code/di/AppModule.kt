@@ -18,7 +18,6 @@ val appModule = module {
     viewModelOf(::ServerStatusViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::TaskListViewModel)
-    
-    // Передаем taskId как параметр в ViewModel
-    factory { (taskId: Int) -> TaskDetailViewModel(taskId) }
+
+    factory { (taskJson: String?) -> TaskDetailViewModel(taskJson) }
 }
