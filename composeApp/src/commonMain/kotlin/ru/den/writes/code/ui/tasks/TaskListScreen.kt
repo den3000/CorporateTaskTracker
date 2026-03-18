@@ -35,6 +35,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
@@ -43,7 +45,7 @@ import ru.den.writes.code.domain.model.TaskPriority
 fun TaskListScreen(
     viewModel: TaskListViewModel = koinViewModel(),
     paddingValues: PaddingValues = PaddingValues(),
-    onNavigateToTask: (Int) -> Unit
+    onNavigateToTask: (String?) -> Unit
 ) {
     val tasks by viewModel.tasks.collectAsState()
 
@@ -73,15 +75,17 @@ fun TaskListScreen(
                     TaskItem(
                         task = task,
                         onToggleCompletion = { viewModel.toggleTaskCompletion(task.id) },
-                        onClick = { onNavigateToTask(task.id) }
+                        onClick = { 
+                            val json = Json.encodeToString(task)
+                            onNavigateToTask(json) 
+                        }
                     )
                 }
             }
         }
 
-        // Кнопка добавления новой задачи (передаём 0, так как id=0 значит "Новая задача")
         FloatingActionButton(
-            onClick = { onNavigateToTask(0) },
+            onClick = { onNavigateToTask(null) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
@@ -159,9 +163,9 @@ fun TaskItem(
 @Composable
 fun PriorityIndicator(priority: TaskPriority) {
     val color = when (priority) {
-        TaskPriority.HIGH -> MaterialTheme.colorScheme.error // Красный
-        TaskPriority.MEDIUM -> MaterialTheme.colorScheme.primary // Корпоративный (синий/фиолетовый)
-        TaskPriority.LOW -> MaterialTheme.colorScheme.secondary // Серый
+        TaskPriority.HIGH -> MaterialTheme.colorScheme.error
+        TaskPriority.MEDIUM -> MaterialTheme.colorScheme.primary
+        TaskPriority.LOW -> MaterialTheme.colorScheme.secondary
     }
 
     Box(

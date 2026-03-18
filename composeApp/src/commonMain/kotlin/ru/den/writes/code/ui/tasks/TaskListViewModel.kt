@@ -63,4 +63,19 @@ class TaskListViewModel : ViewModel() {
             }
         }
     }
+
+    fun addOrUpdateTask(task: Task) {
+        val mutableFlow = tasks
+        mutableFlow.update { currentList ->
+            val index = currentList.indexOfFirst { it.id == task.id }
+            if (index != -1) {
+                val newList = currentList.toMutableList()
+                newList[index] = task
+                newList
+            } else {
+                val newId = if (task.id == 0) (currentList.maxOfOrNull { it.id } ?: 0) + 1 else task.id
+                currentList + task.copy(id = newId)
+            }
+        }
+    }
 }

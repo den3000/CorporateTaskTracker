@@ -18,12 +18,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ru.den.writes.code.domain.model.Task
 
 @Composable
 fun TaskDetailScreen(
     viewModel: TaskDetailViewModel,
     paddingValues: PaddingValues = PaddingValues(),
-    onBack: () -> Unit = {}
+    onTaskSaved: (Task) -> Unit = {}
 ) {
     val title by viewModel.taskTitle.collectAsState()
     val description by viewModel.taskDescription.collectAsState()
@@ -72,8 +73,8 @@ fun TaskDetailScreen(
         // Кнопка сохранения
         Button(
             onClick = {
-                viewModel.saveTask()
-                onBack() // Возвращаемся назад после сохранения
+                val task = viewModel.saveTask()
+                onTaskSaved(task)
             },
             modifier = Modifier
                 .fillMaxWidth()

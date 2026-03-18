@@ -42,7 +42,15 @@
 - Добавить кнопку "Сохранить" (`Button`), которая вызывает метод ViewModel и делает `onBack` (возврат на предыдущий экран).
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 6: Слияние в основную ветку (Merge)
+## [ОЖИДАЕТ] Этап 6: Возврат результата на экран списка (Type-Safe + Serialization)
+**Задача:** Уведомлять `TaskListScreen` об успешном создании или обновлении задачи.
+- Сделать `Task` и `TaskPriority` сериализуемыми (`@Serializable`).
+- Изменить `saveTask()` во ViewModel так, чтобы он возвращал объект `Task`.
+- В `AppNavigation` при вызове `onTaskSaved` сериализовывать `Task` в JSON и класть его в `SavedStateHandle` предыдущего экрана (`navController.previousBackStackEntry`).
+- На экране `TaskListRoute` считывать JSON, десериализовывать в `Task` и вызывать метод `addOrUpdateTask` в `TaskListViewModel`.
+- **[Ожидаем аппрув -> Выполняем `git commit`]**
+
+## [ОЖИДАЕТ] Этап 7: Слияние в основную ветку (Merge)
 **Задача:** Влить фичу в основную ветку.
 - Переключение на основную ветку.
 - Выполнение команды `git merge --no-ff feature/task-ui`.

@@ -3,29 +3,24 @@ package ru.den.writes.code.ui.tasks
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.json.Json
+import ru.den.writes.code.domain.model.Task
+import ru.den.writes.code.domain.model.TaskPriority
 
 class TaskDetailViewModel(
-    val taskId: Int
+    taskJson: String?
 ) : ViewModel() {
 
+    private val task: Task? = taskJson?.let { 
+        try { Json.decodeFromString<Task>(it) } catch (e: Exception) { null } 
+    }
+    private val taskId: Int = task?.id ?: 0
+
     val taskTitle: StateFlow<String>
-        field = MutableStateFlow("")
+        field = MutableStateFlow(task?.title ?: "")
 
     val taskDescription: StateFlow<String>
-        field = MutableStateFlow("")
-
-    init {
-        // Если переданный ID > 0, имитируем загрузку задачи
-        if (taskId > 0) {
-            loadFakeTaskData(taskId)
-        }
-    }
-
-    private fun loadFakeTaskData(id: Int) {
-        // Заглушка, имитирующая данные с сервера
-        taskTitle.value = "Задача №$id"
-        taskDescription.value = "Описание загруженной задачи $id"
-    }
+        field = MutableStateFlow(task?.description ?: "")
 
     fun onTitleChange(newTitle: String) {
         taskTitle.value = newTitle
@@ -35,9 +30,13 @@ class TaskDetailViewModel(
         taskDescription.value = newDescription
     }
 
-    fun saveTask() {
-        // Имитация сохранения задачи: 
-        // Создание (если taskId == 0) или Обновление (если taskId > 0)
-        println("Saving task. ID: $taskId, Title: ${taskTitle.value}, Desc: ${taskDescription.value}")
+    fun saveTask(): Task {
+        return Task(
+            id = taskId,
+            title = taskTitle.value,
+            description = taskDescription.value,
+            isCompleted = task?.isCompleted ?: false,
+            priority = task?.priority ?: TaskPriority.MEDIUM
+        )
     }
 }
