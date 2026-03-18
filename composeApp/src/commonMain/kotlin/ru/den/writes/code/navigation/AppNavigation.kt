@@ -40,7 +40,10 @@ fun AppNavigation(
             // Инициализация ViewModel с параметром (инжектим taskId)
             TaskDetailScreen(
                 viewModel = koinViewModel { parametersOf(route.taskId) },
-                paddingValues = paddingValues
+                paddingValues = paddingValues,
+                onBack = {
+                    navController.popBackStack()
+                }
             )
         }
 
