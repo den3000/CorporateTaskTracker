@@ -22,8 +22,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun TaskListScreen(
     viewModel: TaskListViewModel = koinViewModel(),
     paddingValues: PaddingValues = PaddingValues(),
-    onNavigateToTask: (Int) -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToTask: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -51,12 +50,6 @@ fun TaskListScreen(
 
         Button(onClick = { onNavigateToTask(42) }) {
             Text("Открыть задачу №42")
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(onClick = onNavigateToSettings) {
-            Text("Настройки (Смена темы) ⚙️")
         }
     }
 }

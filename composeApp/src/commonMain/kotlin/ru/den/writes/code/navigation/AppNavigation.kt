@@ -29,9 +29,6 @@ fun AppNavigation(
                 paddingValues = paddingValues,
                 onNavigateToTask = { taskId ->
                     navController.navigate(TaskDetailRoute(taskId))
-                },
-                onNavigateToSettings = {
-                    navController.navigate(SettingsRoute)
                 }
             )
         }
