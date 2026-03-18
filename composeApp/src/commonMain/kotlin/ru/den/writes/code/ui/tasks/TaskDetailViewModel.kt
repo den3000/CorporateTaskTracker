@@ -14,13 +14,19 @@ class TaskDetailViewModel(
     private val task: Task? = taskJson?.let { 
         try { Json.decodeFromString<Task>(it) } catch (e: Exception) { null } 
     }
-    private val taskId: Int = task?.id ?: 0
+    val taskId: Int = task?.id ?: 0
 
     val taskTitle: StateFlow<String>
         field = MutableStateFlow(task?.title ?: "")
 
     val taskDescription: StateFlow<String>
         field = MutableStateFlow(task?.description ?: "")
+
+    val isCompleted: StateFlow<Boolean>
+        field = MutableStateFlow(task?.isCompleted ?: false)
+
+    val taskPriority: StateFlow<TaskPriority>
+        field = MutableStateFlow(task?.priority ?: TaskPriority.MEDIUM)
 
     fun onTitleChange(newTitle: String) {
         taskTitle.value = newTitle
@@ -30,13 +36,21 @@ class TaskDetailViewModel(
         taskDescription.value = newDescription
     }
 
+    fun onCompletionChange(completed: Boolean) {
+        isCompleted.value = completed
+    }
+
+    fun onPriorityChange(priority: TaskPriority) {
+        taskPriority.value = priority
+    }
+
     fun saveTask(): Task {
         return Task(
             id = taskId,
             title = taskTitle.value,
             description = taskDescription.value,
-            isCompleted = task?.isCompleted ?: false,
-            priority = task?.priority ?: TaskPriority.MEDIUM
+            isCompleted = isCompleted.value,
+            priority = taskPriority.value
         )
     }
 }

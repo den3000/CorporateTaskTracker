@@ -1,8 +1,10 @@
 package ru.den.writes.code.ui.tasks
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,15 +12,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ru.den.writes.code.domain.model.Task
+import ru.den.writes.code.domain.model.TaskPriority
 
 @Composable
 fun TaskDetailScreen(
@@ -28,6 +34,8 @@ fun TaskDetailScreen(
 ) {
     val title by viewModel.taskTitle.collectAsState()
     val description by viewModel.taskDescription.collectAsState()
+    val isCompleted by viewModel.isCompleted.collectAsState()
+    val priority by viewModel.taskPriority.collectAsState()
 
     val isNewTask = viewModel.taskId <= 0
     val screenTitle = if (isNewTask) "Новая задача" else "Редактирование задачи #${viewModel.taskId}"
@@ -67,6 +75,46 @@ fun TaskDetailScreen(
             minLines = 4,
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Задача выполнена",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Switch(
+                checked = isCompleted,
+                onCheckedChange = { viewModel.onCompletionChange(it) }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Приоритет",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            TaskPriority.entries.forEach { p ->
+                FilterChip(
+                    selected = priority == p,
+                    onClick = { viewModel.onPriorityChange(p) },
+                    label = { Text(p.name) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.weight(1f)) // Сдвигаем кнопку вниз
 

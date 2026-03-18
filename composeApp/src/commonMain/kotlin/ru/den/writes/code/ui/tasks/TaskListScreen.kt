@@ -164,7 +164,7 @@ fun TaskItem(
 fun PriorityIndicator(priority: TaskPriority) {
     val color = when (priority) {
         TaskPriority.HIGH -> MaterialTheme.colorScheme.error
-        TaskPriority.MEDIUM -> MaterialTheme.colorScheme.primary
+        TaskPriority.MEDIUM -> MaterialTheme.colorScheme.primaryContainer
         TaskPriority.LOW -> MaterialTheme.colorScheme.secondary
     }
 

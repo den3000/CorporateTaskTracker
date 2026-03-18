@@ -42,7 +42,7 @@
 - Добавить кнопку "Сохранить" (`Button`), которая вызывает метод ViewModel и делает `onBack` (возврат на предыдущий экран).
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 6: Возврат результата на экран списка (Type-Safe + Serialization)
+## [ВЫПОЛНЕНО] Этап 6: Возврат результата на экран списка (Type-Safe + Serialization)
 **Задача:** Уведомлять `TaskListScreen` об успешном создании или обновлении задачи.
 - Сделать `Task` и `TaskPriority` сериализуемыми (`@Serializable`).
 - Изменить `saveTask()` во ViewModel так, чтобы он возвращал объект `Task`.
@@ -50,7 +50,15 @@
 - На экране `TaskListRoute` считывать JSON, десериализовывать в `Task` и вызывать метод `addOrUpdateTask` в `TaskListViewModel`.
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 7: Слияние в основную ветку (Merge)
+## [ВЫПОЛНЕНО] Этап 7: Управление Статусом и Приоритетом задачи
+**Задача:** Добавить в `TaskDetailScreen` элементы управления для свойств `isCompleted` и `priority`.
+- В `TaskDetailViewModel` добавить `isCompleted` (`StateFlow<Boolean>`) и `taskPriority` (`StateFlow<TaskPriority>`) с поддержкой `explicit-backing-fields`.
+- Обновить метод `saveTask()`, чтобы он забирал актуальные значения `isCompleted` и `taskPriority`.
+- В `TaskDetailScreen` добавить `Row` с чекбоксом "Задача выполнена" (или свитчом).
+- В `TaskDetailScreen` добавить элемент выбора приоритета (например, 3 `FilterChip` / `SegmentedButton` или `DropdownMenu` для LOW, MEDIUM, HIGH).
+- **[Ожидаем аппрув -> Выполняем `git commit`]**
+
+## [ОЖИДАЕТ] Этап 8: Слияние в основную ветку (Merge)
 **Задача:** Влить фичу в основную ветку.
 - Переключение на основную ветку.
 - Выполнение команды `git merge --no-ff feature/task-ui`.
