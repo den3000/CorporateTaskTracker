@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import ru.den.writes.code.ui.components.ServerStatusIndicator
 import ru.den.writes.code.ui.settings.SettingsScreen
 import ru.den.writes.code.ui.settings.SettingsViewModel
 import ru.den.writes.code.ui.tasks.TaskDetailScreen
@@ -53,7 +52,6 @@ fun AppNavigation(
                 viewModel = settingsViewModel,
                 paddingValues = paddingValues,
                 isDarkTheme = isDarkTheme,
-                serverStatusContent = { ServerStatusIndicator() }
             )
         }
     }

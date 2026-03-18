@@ -36,7 +36,6 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
     paddingValues: PaddingValues = PaddingValues(),
     isDarkTheme: Boolean = false,
-    serverStatusContent: @Composable () -> Unit
 ) {
     val showContent by viewModel.showContent.collectAsState()
 
@@ -50,8 +49,6 @@ fun SettingsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        serverStatusContent()
-
         Button(
             onClick = { viewModel.toggleTheme(isDarkTheme) },
             colors = ButtonDefaults.buttonColors(

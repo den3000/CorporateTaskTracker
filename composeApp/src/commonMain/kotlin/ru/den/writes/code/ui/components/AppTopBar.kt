@@ -1,6 +1,6 @@
 package ru.den.writes.code.ui.components
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,6 +12,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import ru.den.writes.code.navigation.SettingsRoute
@@ -35,26 +37,29 @@ fun AppTopBar(
         else -> "Corporate Task Tracker"
     }
 
-    Column {
-        TopAppBar(
-            title = {
-                Text(text = titleText)
-            },
-            navigationIcon = {
-                if (canPop) {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад"
-                        )
-                    }
+    TopAppBar(
+        title = {
+            Text(text = titleText)
+        },
+        navigationIcon = {
+            if (canPop) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Назад"
+                    )
                 }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            }
+        },
+        actions = {
+            // Индикатор статуса сервера с отступом справа (чтобы не прилипал к краю экрана)
+            ServerStatusIndicator(modifier = Modifier.padding(end = 16.dp))
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
-    }
+    )
 }

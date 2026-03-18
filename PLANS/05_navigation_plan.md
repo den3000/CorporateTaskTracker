@@ -44,9 +44,18 @@
 **Задача:** Добавить полноценный `TopAppBar` из Material 3 (с тайтлом и кнопкой возврата).
 - В `AppNavigation` (или `App.kt`) вынести управление `TopAppBar` с отслеживанием текущего маршрута (`navController.currentBackStackEntryAsState()`).
 - В `TopAppBar` добавить кнопку "Назад", которая появляется, когда `navController.previousBackStackEntry != null` (или когда маршрут не `TaskListRoute`).
-- Интегрировать нашу плашку `ServerStatusIndicator` под или внутрь `TopAppBar`.
 - Убрать временные кнопки `← Назад` из центров экранов `SettingsScreen` и `TaskDetailScreen`.
 - Убедиться в корректности обработки системных отступов (`WindowInsets`).
+- **[Ожидаем аппрув -> Выполняем `git commit`]**
+
+## [ВЫПОЛНЕНО] Этап 5.1: Интеграция ServerStatusIndicator в TopAppBar (Иконкой)
+**Задача:** Превратить громоздкую плашку статуса в элегантную иконку в `TopAppBar`.
+- Убрать `ServerStatusIndicator` из `SettingsScreen` (он должен быть глобальным).
+- Изменить логику `ServerStatusIndicator`: вместо прямоугольной плашки (`Box` с текстом) он должен возвращать `Icon`.
+- Иконка `CloudOff` для `OFFLINE` (красная).
+- Иконка `QuestionMark` для `CONNECTING` (серая/оранжевая).
+- Ничего (или прозрачная заглушка) для `ONLINE`.
+- Внедрить `ServerStatusIndicator` в параметр `actions` внутри `TopAppBar`.
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
 ## [ОЖИДАЕТ] Этап 6: Слияние в основную ветку (Merge)
