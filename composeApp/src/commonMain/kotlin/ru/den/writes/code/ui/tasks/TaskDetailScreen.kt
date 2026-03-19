@@ -26,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ru.den.writes.code.domain.model.TaskPriority
+import androidx.compose.ui.tooling.preview.Preview
+import ru.den.writes.code.ui.theme.AppTheme
 
 @Composable
 fun TaskDetailScreen(
@@ -39,8 +41,42 @@ fun TaskDetailScreen(
     val isCompleted by viewModel.isCompleted.collectAsState()
     val priority by viewModel.taskPriority.collectAsState()
 
-    val isNewTask = viewModel.taskId <= 0
-    val screenTitle = if (isNewTask) "Новая задача" else "Редактирование задачи #${viewModel.taskId}"
+    TaskDetailContent(
+        taskId = viewModel.taskId,
+        title = title,
+        description = description,
+        isCompleted = isCompleted,
+        priority = priority,
+        onTitleChange = viewModel::onTitleChange,
+        onDescriptionChange = viewModel::onDescriptionChange,
+        onCompletionChange = viewModel::onCompletionChange,
+        onPriorityChange = viewModel::onPriorityChange,
+        onSave = {
+            scope.launch {
+                viewModel.saveTask()
+                onBack()
+            }
+        },
+        paddingValues = paddingValues
+    )
+}
+
+@Composable
+fun TaskDetailContent(
+    taskId: Int,
+    title: String,
+    description: String,
+    isCompleted: Boolean,
+    priority: TaskPriority,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onCompletionChange: (Boolean) -> Unit,
+    onPriorityChange: (TaskPriority) -> Unit,
+    onSave: () -> Unit,
+    paddingValues: PaddingValues = PaddingValues()
+) {
+    val isNewTask = taskId <= 0
+    val screenTitle = if (isNewTask) "Новая задача" else "Редактирование задачи #${taskId}"
 
     Column(
         modifier = Modifier
@@ -61,7 +97,7 @@ fun TaskDetailScreen(
         // Поле ввода: Заголовок
         OutlinedTextField(
             value = title,
-            onValueChange = { viewModel.onTitleChange(it) },
+            onValueChange = onTitleChange,
             label = { Text("Название задачи") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -72,7 +108,7 @@ fun TaskDetailScreen(
         // Поле ввода: Описание
         OutlinedTextField(
             value = description,
-            onValueChange = { viewModel.onDescriptionChange(it) },
+            onValueChange = onDescriptionChange,
             label = { Text("Подробное описание") },
             minLines = 4,
             modifier = Modifier.fillMaxWidth()
@@ -92,7 +128,7 @@ fun TaskDetailScreen(
             )
             Switch(
                 checked = isCompleted,
-                onCheckedChange = { viewModel.onCompletionChange(it) }
+                onCheckedChange = onCompletionChange
             )
         }
 
@@ -111,7 +147,7 @@ fun TaskDetailScreen(
             TaskPriority.entries.forEach { p ->
                 FilterChip(
                     selected = priority == p,
-                    onClick = { viewModel.onPriorityChange(p) },
+                    onClick = { onPriorityChange(p) },
                     label = { Text(p.name) },
                     modifier = Modifier.weight(1f)
                 )
@@ -122,12 +158,7 @@ fun TaskDetailScreen(
 
         // Кнопка сохранения
         Button(
-            onClick = {
-                scope.launch {
-                    viewModel.saveTask()
-                    onBack()
-                }
-            },
+            onClick = onSave,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -135,5 +166,43 @@ fun TaskDetailScreen(
         ) {
             Text(if (isNewTask) "Создать" else "Сохранить изменения")
         }
+    }
+}
+
+@Preview
+@Composable
+fun TaskDetailScreenPreview() {
+    AppTheme {
+        TaskDetailContent(
+            taskId = 1,
+            title = "Пример задачи",
+            description = "Это пример описания задачи для превью",
+            isCompleted = false,
+            priority = TaskPriority.MEDIUM,
+            onTitleChange = {},
+            onDescriptionChange = {},
+            onCompletionChange = {},
+            onPriorityChange = {},
+            onSave = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun NewTaskDetailScreenPreview() {
+    AppTheme(true) {
+        TaskDetailContent(
+            taskId = 0,
+            title = "",
+            description = "",
+            isCompleted = false,
+            priority = TaskPriority.MEDIUM,
+            onTitleChange = {},
+            onDescriptionChange = {},
+            onCompletionChange = {},
+            onPriorityChange = {},
+            onSave = {}
+        )
     }
 }
