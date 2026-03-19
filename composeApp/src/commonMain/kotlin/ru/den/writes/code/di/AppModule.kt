@@ -4,6 +4,9 @@ import io.ktor.client.HttpClient
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import ru.den.writes.code.ServerStatusViewModel
+import ru.den.writes.code.data.local.AppDatabase
+import ru.den.writes.code.data.local.getRoomDatabase
+import ru.den.writes.code.data.repository.LocalTaskRepository
 import ru.den.writes.code.network.NetworkMonitor
 import ru.den.writes.code.ui.settings.SettingsViewModel
 import ru.den.writes.code.ui.tasks.TaskDetailViewModel
@@ -14,10 +17,20 @@ val appModule = module {
     single { HttpClient() }
     single { NetworkMonitor(get()) }
 
+    // База данных
+    single { getRoomDatabase(get()) }
+    single { get<AppDatabase>().taskDao() }
+    
+    // Репозиторий
+    single { LocalTaskRepository(get()) }
+
     // ViewModels
     viewModelOf(::ServerStatusViewModel)
     viewModelOf(::SettingsViewModel)
-    viewModelOf(::TaskListViewModel)
-
-    factory { (taskJson: String?) -> TaskDetailViewModel(taskJson) }
+    
+    // Передаем репозиторий в TaskListViewModel
+    factory { TaskListViewModel(get()) }
+    
+    // Передаем taskJson и репозиторий в TaskDetailViewModel
+    factory { (taskJson: String?) -> TaskDetailViewModel(taskJson, get()) }
 }

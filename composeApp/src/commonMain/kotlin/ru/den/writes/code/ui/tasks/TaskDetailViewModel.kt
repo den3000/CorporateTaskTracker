@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
+import ru.den.writes.code.data.repository.LocalTaskRepository
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
 
 class TaskDetailViewModel(
-    taskJson: String?
+    taskJson: String?,
+    private val repository: LocalTaskRepository
 ) : ViewModel() {
 
     private val task: Task? = taskJson?.let { 
