@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.di.appModule
+import ru.den.writes.code.di.platformModule
 import ru.den.writes.code.navigation.AppNavigation
 import ru.den.writes.code.ui.components.AppTopBar
 import ru.den.writes.code.ui.settings.SettingsViewModel
@@ -18,7 +19,10 @@ import ru.den.writes.code.ui.theme.AppTheme
 @Preview
 fun App() {
     KoinApplication(application = {
-        modules(appModule)
+        modules(
+            platformModule,
+            appModule,
+        )
     }) {
         val settingsViewModel: SettingsViewModel = koinViewModel()
         val useDarkTheme = settingsViewModel.isDarkThemeOverride

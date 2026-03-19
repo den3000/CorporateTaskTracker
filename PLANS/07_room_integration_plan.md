@@ -29,11 +29,12 @@ https://developer.android.com/kotlin/multiplatform/room
 - Написание мапперов: `TaskEntity` <-> `Task` (из shared).
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 4: База данных и Платформенная реализация
+## [ВЫПОЛНЕНО] Этап 4: База данных и Платформенная реализация
 **Задача:** Настроить создание БД для Android и iOS.
 - Определение `AppDatabase` (расширяет `RoomDatabase`).
-- Создание `expect fun getDatabaseBuilder()` в `commonMain` модуля `composeApp`.
-- Реализация `actual` для Android (использование `Context`) и iOS (путь к `NSDocumentDirectory`).
+- Использование платформенных DI модулей Koin (`PlatformModule.kt`) вместо `expect/actual` функций.
+- Реализация платформенных билдеров БД (`Database.android.kt` с `Context` и `Database.ios.kt`).
+- Автогенерация `AppDatabaseConstructor` через KSP.
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
 ## [ОЖИДАЕТ] Этап 5: Репозиторий и Интеграция с UI
