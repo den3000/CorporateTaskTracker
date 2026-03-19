@@ -15,7 +15,7 @@ https://developer.android.com/kotlin/multiplatform/room
 - Теперь `:server` тоже сможет использовать эти модели для будущих API.
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 2: Подключение Room в composeApp
+## [ВЫПОЛНЕНО] Этап 2: Подключение Room в composeApp
 **Задача:** Добавить Room KMP только в мобильный модуль.
 - Добавление плагина KSP в `libs.versions.toml` и `build.gradle.kts` (root и `:composeApp`).
 - Добавление зависимостей `androidx.room:room-runtime` и `compiler` в `composeApp/build.gradle.kts`.

@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 }
 
 val generateAppConfig by tasks.registering {
@@ -41,6 +43,10 @@ val generateAppConfig by tasks.registering {
             }
         """.trimIndent())
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 kotlin {
@@ -94,6 +100,10 @@ kotlin {
                 // Иконки Material
                 implementation("org.jetbrains.compose.material:material-icons-extended:1.7.0")
 
+                // Room
+                implementation(libs.androidx.room.runtime)
+                implementation(libs.androidx.sqlite.bundled)
+
                 implementation(projects.shared)
             }
         }
@@ -104,6 +114,12 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+dependencies {
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
 }
 
 android {
