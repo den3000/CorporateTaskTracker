@@ -22,7 +22,7 @@ https://developer.android.com/kotlin/multiplatform/room
 - Настройка путей для генерации кода (Room требует KSP).
 - **[Ожидаем аппрув -> Выполняем `git commit`]**
 
-## [ОЖИДАЕТ] Этап 3: Создание Сущностей и DAO (composeApp)
+## [ВЫПОЛНЕНО] Этап 3: Создание Сущностей и DAO (composeApp)
 **Задача:** Реализовать логику хранения в мобильном приложении.
 - Создание `TaskEntity.kt` в `composeApp` (это будет "плоская" модель для БД).
 - Создание `TaskDao.kt` с методами `upsert`, `delete` и `getAllTasks` (Flow).
