@@ -28,9 +28,6 @@ val appModule = module {
     viewModelOf(::ServerStatusViewModel)
     viewModelOf(::SettingsViewModel)
     
-    // Передаем репозиторий в TaskListViewModel
     factory { TaskListViewModel(get()) }
-    
-    // Передаем taskJson и репозиторий в TaskDetailViewModel
-    factory { (taskJson: String?) -> TaskDetailViewModel(taskJson, get()) }
+    factory { (taskId: Int) -> TaskDetailViewModel(taskId, get()) }
 }

@@ -35,8 +35,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
@@ -45,7 +43,7 @@ import ru.den.writes.code.domain.model.TaskPriority
 fun TaskListScreen(
     viewModel: TaskListViewModel = koinViewModel(),
     paddingValues: PaddingValues = PaddingValues(),
-    onNavigateToTask: (String?) -> Unit
+    onNavigateToTask: (Int) -> Unit
 ) {
     val tasks by viewModel.tasks.collectAsState()
 
@@ -75,17 +73,14 @@ fun TaskListScreen(
                     TaskItem(
                         task = task,
                         onToggleCompletion = { viewModel.toggleTaskCompletion(task.id) },
-                        onClick = { 
-                            val json = Json.encodeToString(task)
-                            onNavigateToTask(json) 
-                        }
+                        onClick = { onNavigateToTask(task.id) }
                     )
                 }
             }
         }
 
         FloatingActionButton(
-            onClick = { onNavigateToTask(null) },
+            onClick = { onNavigateToTask(0) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),

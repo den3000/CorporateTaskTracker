@@ -20,18 +20,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.den.writes.code.domain.model.Task
+import kotlinx.coroutines.launch
 import ru.den.writes.code.domain.model.TaskPriority
 
 @Composable
 fun TaskDetailScreen(
     viewModel: TaskDetailViewModel,
     paddingValues: PaddingValues = PaddingValues(),
-    onTaskSaved: (Task) -> Unit = {}
+    onBack: () -> Unit = {}
 ) {
+    val scope = rememberCoroutineScope()
     val title by viewModel.taskTitle.collectAsState()
     val description by viewModel.taskDescription.collectAsState()
     val isCompleted by viewModel.isCompleted.collectAsState()
@@ -121,8 +123,10 @@ fun TaskDetailScreen(
         // Кнопка сохранения
         Button(
             onClick = {
-                val task = viewModel.saveTask()
-                onTaskSaved(task)
+                scope.launch {
+                    viewModel.saveTask()
+                    onBack()
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
