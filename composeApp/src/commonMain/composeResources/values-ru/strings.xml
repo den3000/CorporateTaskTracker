@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Корпоративный Трекер Задач</string>
-    <string name="btn_click_me">Нажми меня!</string>
+    <string name="btn_click_me">Нажми на меня!</string>
+    <string name="priority_high">Высокий</string>
+    <string name="priority_medium">Средний</string>
+    <string name="priority_low">Низкий</string>
+    <string name="select_priority">Выберите приоритет</string>
 </resources>
