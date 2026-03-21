@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,39 +10,8 @@ plugins {
     alias(libs.plugins.androidx.room)
 }
 
-val generateAppConfig by tasks.registering {
-    // 1. Читаем local.properties
-    val localProperties = Properties()
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        localPropertiesFile.inputStream().use { localProperties.load(it) }
-    }
-
-    // 2. Цепочка приоритетов: терминал (-P) -> local.properties -> "" (дефолт)
-    val serverIp = (project.findProperty("SERVER_IP") as? String)
-        ?: localProperties.getProperty("SERVER_IP")
-        ?: ""
-
-    // 3. Кеширование (чтобы не пересобирать без необходимости)
-    inputs.property("serverIp", serverIp)
-
-    val outputDir = layout.buildDirectory.dir("generated/appconfig/kotlin")
-    outputs.dir(outputDir)
-
-    doLast {
-        val file = File(outputDir.get().asFile, "ru/den/writes/code/config/AppConfig.kt")
-        file.parentFile.mkdirs()
-        file.writeText("""
-            package ru.den.writes.code.config
-
-            object AppConfig {
-                // Если сюда придет пустая строка, ваш NetworkMonitor 
-                // сам подставит 10.0.2.2 или 127.0.0.1
-                const val SERVER_IP: String = "$serverIp"
-            }
-        """.trimIndent())
-    }
-}
+apply(from = "generateAppConfig.gradle.kts")
+val generateAppConfigTask: TaskProvider<Task?>? = tasks.named("generateAppConfig")
 
 room {
     schemaDirectory("$projectDir/schemas")
@@ -79,7 +47,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
         }
         commonMain {
-            kotlin.srcDir(generateAppConfig)
+            kotlin.srcDir(generateAppConfigTask)
 
             dependencies {
                 implementation(libs.compose.runtime)
