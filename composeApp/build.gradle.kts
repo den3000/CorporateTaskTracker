@@ -1,5 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val Project.auroraEnabled: Boolean
+    get() = findProperty("compose.aurora.enabled") == "true"
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -8,6 +11,8 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+
+    alias(libs.plugins.auroraBuildTools)
 }
 
 apply(from = "generateAppConfig.gradle.kts")

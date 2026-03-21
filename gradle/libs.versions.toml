@@ -25,6 +25,12 @@ android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
 
+# Aurora
+akPathInfo="0.0.1"
+auroraBuildTools = "0.0.1"
+spotless="7.0.3"
+ktor-aurora = "3.1.2-aurora"
+
 # Other
 junit = "4.13.2"
 logback = "1.5.24"
@@ -63,6 +69,10 @@ ktor-serverTestHost = { module = "io.ktor:ktor-server-test-host-jvm", version.re
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-curl = { module = "io.ktor:ktor-client-curl", version.ref = "ktor-aurora" }
+
+# Aurora
+aurora-akPathInfo = { module = "ru.auroraos.kmp:ak-path-info", version.ref = "akPathInfo" }
 
 # Other
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
@@ -93,3 +103,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Ktor
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
+
+# Aurora
+auroraBuildTools = { id = "ru.auroraos.kmp.buildtools", version.ref = "auroraBuildTools" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
