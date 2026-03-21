@@ -6,7 +6,7 @@ val Project.auroraEnabled: Boolean
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeMultiplatform)
+    id("org.jetbrains.compose")
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
@@ -20,6 +20,28 @@ val generateAppConfigTask: TaskProvider<Task?>? = tasks.named("generateAppConfig
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+buildTools {
+    rpm {
+        id = "ru.den.writes.code.corporate_task_tracker"
+        name = "Corporate Task Tracker"
+        description = "Corpora Task Tracker built with KMP for Aurora OS"
+        version = "0.0.1"
+        permissions = listOf("Internet")
+        libs3rdParty = listOf("maliit-glib")
+        icons = projectDir.toPath().resolve("icons")
+        resources = projectDir.toPath().resolve("src/commonMain/composeResources")
+    }
+
+    // Run on device
+    run {
+        host = "192.168.0.18"
+        user = "defaultuser"
+        port = 22
+        validate = true
+        sshKey = File(System.getProperty("user.home")).resolve(".ssh/qtc_id").toPath()
+    }
 }
 
 kotlin {

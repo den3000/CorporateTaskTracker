@@ -14,6 +14,15 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
     }
+
+    plugins {
+        val composeVersion = if (providers.gradleProperty("compose.aurora.enabled").orNull == "true") {
+            providers.gradleProperty("compose.version.aurora").get()
+        } else {
+            providers.gradleProperty("compose.version.upstream").get()
+        }
+        id("org.jetbrains.compose").version(composeVersion) apply false
+    }
 }
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
