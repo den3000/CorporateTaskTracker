@@ -90,6 +90,11 @@ kotlin {
         sourceSets {
             commonMain {
                 kotlin.srcDir(generateAppConfigTask)
+                
+                // Добавляем папку с заглушкой для Preview только для сборки Авроры
+                if (auroraEnabled) {
+                    kotlin.srcDir("src/previewStub/kotlin")
+                }
 
                 dependencies {
                     if (!auroraEnabled) {
@@ -101,7 +106,7 @@ kotlin {
                         implementation(libs.navigation.compose)
 
                         // Не доступно для Аврора ОС
-                        // 1.
+                        // 1. исправлено с помощью Preview-stub
                         implementation(libs.compose.uiToolingPreview)
 
                         // 2.
