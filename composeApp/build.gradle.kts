@@ -117,7 +117,8 @@ kotlin {
 
                         // 3.
                         implementation(libs.compose.components.resources)
-                        implementation("org.jetbrains.compose.material:material-icons-extended:1.7.0")
+                        // Добавляем только нужные иконки в composeResources
+                        // implementation("org.jetbrains.compose.material:material-icons-extended:1.7.0")
                     } else {
                         // Аналог для Аврора ОС
                         implementation(compose.runtime)

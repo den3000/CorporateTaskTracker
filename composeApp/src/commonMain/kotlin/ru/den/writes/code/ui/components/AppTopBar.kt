@@ -2,9 +2,6 @@ package ru.den.writes.code.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,6 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import corporatetasktracker.composeapp.generated.resources.Res
+import corporatetasktracker.composeapp.generated.resources.arrow_back_24px
+import corporatetasktracker.composeapp.generated.resources.settings_24px
+import org.jetbrains.compose.resources.painterResource
 import ru.den.writes.code.navigation.SettingsRoute
 import ru.den.writes.code.navigation.TaskDetailRoute
 import ru.den.writes.code.navigation.TaskListRoute
@@ -49,7 +50,7 @@ fun AppTopBar(
             if (canPop) {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        painter = painterResource(Res.drawable.arrow_back_24px),
                         contentDescription = "Назад"
                     )
                 }
@@ -62,7 +63,7 @@ fun AppTopBar(
                 if (!isSettingsScreen) {
                     IconButton(onClick = { navController.navigate(SettingsRoute) }) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
+                            painter = painterResource(Res.drawable.settings_24px),
                             contentDescription = "Настройки"
                         )
                     }

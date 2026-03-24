@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,11 +17,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import corporatetasktracker.composeapp.generated.resources.Res
+import corporatetasktracker.composeapp.generated.resources.add_2_24px
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
-import androidx.compose.ui.tooling.preview.Preview
 import ru.den.writes.code.ui.theme.AppTheme
 
 @Composable
@@ -90,7 +91,7 @@ fun TaskListContent(
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                painter = painterResource(Res.drawable.add_2_24px),
                 contentDescription = "Добавить задачу"
             )
         }
