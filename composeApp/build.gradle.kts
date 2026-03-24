@@ -94,6 +94,7 @@ kotlin {
                 // Добавляем папку с заглушкой для Preview только для сборки Авроры
                 if (auroraEnabled) {
                     kotlin.srcDir("src/previewStub/kotlin")
+                    kotlin.srcDir("src/koinCompat/kotlin")
                 }
 
                 dependencies {
@@ -109,7 +110,7 @@ kotlin {
                         // 1. исправлено с помощью Preview-stub
                         implementation(libs.compose.uiToolingPreview)
 
-                        // 2.
+                        // 2. Исправлено с помощью Koin-Compat
                         implementation(libs.koin.compose)
                         implementation(libs.koin.compose.viewmodel)
                         implementation(libs.androidx.lifecycle.viewmodelCompose)
