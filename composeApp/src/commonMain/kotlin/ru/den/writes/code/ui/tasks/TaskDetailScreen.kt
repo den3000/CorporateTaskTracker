@@ -2,6 +2,7 @@ package ru.den.writes.code.ui.tasks
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +32,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import corporatetasktracker.composeapp.generated.resources.Res
@@ -97,12 +100,18 @@ fun TaskDetailContent(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
             .background(MaterialTheme.colorScheme.background)
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
             .safeContentPadding()
             .padding(16.dp)
     ) {
@@ -171,7 +180,10 @@ fun TaskDetailContent(
                 )
                 PriorityBadge(
                     priority = priority,
-                    onClick = { showBottomSheet = true }
+                    onClick = {
+                        focusManager.clearFocus()
+                        showBottomSheet = true
+                    }
                 )
             }
 
@@ -180,7 +192,10 @@ fun TaskDetailContent(
 
         // Кнопка сохранения
         Button(
-            onClick = onSave,
+            onClick = {
+                focusManager.clearFocus()
+                onSave()
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
