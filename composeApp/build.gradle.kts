@@ -31,7 +31,7 @@ buildTools {
         permissions = listOf("Internet")
         libs3rdParty = listOf("maliit-glib")
         icons = projectDir.toPath().resolve("icons")
-        resources = projectDir.toPath().resolve("src/commonMain/composeResources")
+        resources = projectDir.toPath().resolve("build/generated/compose/resourceGenerator/preparedResources/commonMain/composeResources")
     }
 
     // Run on device
@@ -218,6 +218,10 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+}
+
+compose.resources {
+    generateResClass = always
 }
 
 apply(from = "aurora-tasks.gradle.kts")
