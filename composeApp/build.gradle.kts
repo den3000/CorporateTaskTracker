@@ -90,11 +90,13 @@ kotlin {
         sourceSets {
             commonMain {
                 kotlin.srcDir(generateAppConfigTask)
-                
+
                 // Добавляем папку с заглушкой для Preview только для сборки Авроры
                 if (auroraEnabled) {
                     kotlin.srcDir("src/previewStub/kotlin")
                     kotlin.srcDir("src/koinCompat/kotlin")
+
+                    kotlin.srcDir(tasks.named("generateComposeResClass"))
                 }
 
                 dependencies {
@@ -132,6 +134,9 @@ kotlin {
                          */
                         val auroraNavigation = compose.javaClass.getMethod("getNavigation").invoke(compose)
                         implementation(auroraNavigation)
+
+                        // Зависимость на полифил compose.resources только для Аврора ОС
+                        implementation(projects.compResAuroraCompat)
                     }
 
                     // Доступно везде

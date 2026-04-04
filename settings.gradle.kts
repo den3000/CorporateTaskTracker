@@ -45,3 +45,4 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":server")
 include(":shared")
+include(":compResAuroraCompat")
