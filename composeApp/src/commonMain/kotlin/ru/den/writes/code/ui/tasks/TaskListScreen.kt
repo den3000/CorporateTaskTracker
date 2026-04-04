@@ -21,7 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import corporatetasktracker.composeapp.generated.resources.Res
 import corporatetasktracker.composeapp.generated.resources.add_2_24px
+import corporatetasktracker.composeapp.generated.resources.content_desc_add_task
+import corporatetasktracker.composeapp.generated.resources.empty_task_list
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
@@ -58,7 +61,7 @@ fun TaskListContent(
     ) {
         if (tasks.isEmpty()) {
             Text(
-                text = "Список задач пуст",
+                text = stringResource(Res.string.empty_task_list),
                 modifier = Modifier.align(Alignment.Center),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -92,7 +95,7 @@ fun TaskListContent(
         ) {
             Icon(
                 painter = painterResource(Res.drawable.add_2_24px),
-                contentDescription = "Добавить задачу"
+                contentDescription = stringResource(Res.string.content_desc_add_task)
             )
         }
     }

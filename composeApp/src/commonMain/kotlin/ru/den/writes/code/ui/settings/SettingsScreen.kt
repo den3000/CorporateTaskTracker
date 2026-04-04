@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import corporatetasktracker.composeapp.generated.resources.Res
 import corporatetasktracker.composeapp.generated.resources.btn_click_me
+import corporatetasktracker.composeapp.generated.resources.btn_switch_dark
+import corporatetasktracker.composeapp.generated.resources.btn_switch_light
 import corporatetasktracker.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -56,7 +58,10 @@ fun SettingsScreen(
                 contentColor = MaterialTheme.colorScheme.onSecondary
             )
         ) {
-            Text(if (isDarkTheme) "Переключить на Светлую ☀️" else "Переключить на Темную 🌙")
+            Text(
+                if (isDarkTheme) stringResource(Res.string.btn_switch_light)
+                else stringResource(Res.string.btn_switch_dark)
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -37,10 +37,18 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import corporatetasktracker.composeapp.generated.resources.Res
+import corporatetasktracker.composeapp.generated.resources.btn_create
+import corporatetasktracker.composeapp.generated.resources.btn_save_changes
+import corporatetasktracker.composeapp.generated.resources.label_priority
+import corporatetasktracker.composeapp.generated.resources.label_task_completed
+import corporatetasktracker.composeapp.generated.resources.label_task_description
+import corporatetasktracker.composeapp.generated.resources.label_task_name
 import corporatetasktracker.composeapp.generated.resources.priority_high
 import corporatetasktracker.composeapp.generated.resources.priority_low
 import corporatetasktracker.composeapp.generated.resources.priority_medium
 import corporatetasktracker.composeapp.generated.resources.select_priority
+import corporatetasktracker.composeapp.generated.resources.title_edit_task
+import corporatetasktracker.composeapp.generated.resources.title_new_task
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import ru.den.writes.code.domain.model.TaskPriority
@@ -94,7 +102,11 @@ fun TaskDetailContent(
     paddingValues: PaddingValues = PaddingValues()
 ) {
     val isNewTask = taskId <= 0
-    val screenTitle = if (isNewTask) "Новая задача" else "Редактирование задачи #${taskId}"
+    val screenTitle = if (isNewTask) {
+        stringResource(Res.string.title_new_task)
+    } else {
+        stringResource(Res.string.title_edit_task, taskId)
+    }
 
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
@@ -132,7 +144,7 @@ fun TaskDetailContent(
             OutlinedTextField(
                 value = title,
                 onValueChange = onTitleChange,
-                label = { Text("Название задачи") },
+                label = { Text(stringResource(Res.string.label_task_name)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -143,7 +155,7 @@ fun TaskDetailContent(
             OutlinedTextField(
                 value = description,
                 onValueChange = onDescriptionChange,
-                label = { Text("Подробное описание") },
+                label = { Text(stringResource(Res.string.label_task_description)) },
                 minLines = 4,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -156,7 +168,7 @@ fun TaskDetailContent(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Задача выполнена",
+                    text = stringResource(Res.string.label_task_completed),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -174,7 +186,7 @@ fun TaskDetailContent(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Приоритет",
+                    text = stringResource(Res.string.label_priority),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -201,7 +213,10 @@ fun TaskDetailContent(
                 .height(56.dp),
             enabled = title.isNotBlank() // Нельзя сохранить задачу без названия
         ) {
-            Text(if (isNewTask) "Создать" else "Сохранить изменения")
+            Text(
+                if (isNewTask) stringResource(Res.string.btn_create)
+                else stringResource(Res.string.btn_save_changes)
+            )
         }
     }
 
