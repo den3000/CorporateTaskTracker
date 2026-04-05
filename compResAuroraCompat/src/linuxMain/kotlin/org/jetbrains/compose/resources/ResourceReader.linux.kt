@@ -7,16 +7,13 @@ import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pin
 import kotlinx.cinterop.pointed
-import kotlinx.cinterop.toCValues
 import kotlinx.cinterop.toKString
-import kotlinx.cinterop.usePinned
 import platform.posix.SEEK_SET
 import platform.posix.closedir
 import platform.posix.fclose
 import platform.posix.fopen
 import platform.posix.fread
 import platform.posix.fseek
-import platform.posix.memcpy
 import platform.posix.opendir
 import platform.posix.readdir
 import ru.auroraos.kmp.pathInfo.PathInfo
@@ -28,7 +25,13 @@ internal object DefaultLinuxResourceReader : ResourceReader {
 
     @OptIn(ExperimentalForeignApi::class)
     override suspend fun read(path: String): ByteArray {
-        TODO("Not yet implemented")
+        val cleanPath = path.substringAfter(".generated.resources/")
+        val res = try {
+            PathInfo.getResourceBytes(cleanPath)
+        } catch (e: Exception) {
+            throw e
+        }
+        return res
     }
 
     @OptIn(ExperimentalForeignApi::class)
