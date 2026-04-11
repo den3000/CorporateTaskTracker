@@ -83,19 +83,6 @@ fun TaskListContent(
             }
         }
     }
-
-    FloatingActionButton(
-        onClick = { onNavigateToTask(0) },
-        modifier = Modifier
-            .padding(16.dp),
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-    ) {
-        Icon(
-            painter = painterResource(Res.drawable.add_2_24px),
-            contentDescription = stringResource(Res.string.content_desc_add_task)
-        )
-    }
 }
 
 @Preview

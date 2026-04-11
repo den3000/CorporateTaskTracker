@@ -17,6 +17,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.di.appModule
 import ru.den.writes.code.di.platformModule
 import ru.den.writes.code.navigation.AppNavigation
+import ru.den.writes.code.ui.components.AppFab
 import ru.den.writes.code.ui.components.AppTopBar
 import ru.den.writes.code.ui.settings.SettingsViewModel
 import ru.den.writes.code.ui.theme.AppTheme
@@ -43,11 +44,8 @@ fun App(
             val navController = rememberNavController()
 
             Scaffold(
-                topBar = {
-                    AppTopBar(
-                        navController = navController
-                    )
-                }
+                topBar = { AppTopBar(navController) },
+                floatingActionButton = { AppFab(navController) }
             ) { paddingValues ->
                 Box(
                     modifier = Modifier
