@@ -2,7 +2,7 @@ package ru.den.writes.code.ui.tasks
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -33,14 +33,12 @@ import ru.den.writes.code.ui.theme.AppTheme
 @Composable
 fun TaskListScreen(
     viewModel: TaskListViewModel = koinViewModel(),
-    paddingValues: PaddingValues = PaddingValues(),
     onNavigateToTask: (Int) -> Unit
 ) {
     val tasks by viewModel.tasks.collectAsState()
 
     TaskListContent(
         tasks = tasks,
-        paddingValues = paddingValues,
         onToggleCompletion = { viewModel.toggleTaskCompletion(it) },
         onNavigateToTask = onNavigateToTask
     )
@@ -49,55 +47,54 @@ fun TaskListScreen(
 @Composable
 fun TaskListContent(
     tasks: List<Task>,
-    paddingValues: PaddingValues = PaddingValues(),
     onToggleCompletion: (Int) -> Unit,
     onNavigateToTask: (Int) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(paddingValues)
-    ) {
-        if (tasks.isEmpty()) {
+    if (tasks.isEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
                 text = stringResource(Res.string.empty_task_list),
-                modifier = Modifier.align(Alignment.Center),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(
-                    items = tasks,
-                    key = { it.id }
-                ) { task ->
-                    TaskItem(
-                        task = task,
-                        onToggleCompletion = { onToggleCompletion(task.id) },
-                        onClick = { onNavigateToTask(task.id) }
-                    )
-                }
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(
+                items = tasks,
+                key = { it.id }
+            ) { task ->
+                TaskItem(
+                    task = task,
+                    onToggleCompletion = { onToggleCompletion(task.id) },
+                    onClick = { onNavigateToTask(task.id) }
+                )
             }
         }
+    }
 
-        FloatingActionButton(
-            onClick = { onNavigateToTask(0) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.add_2_24px),
-                contentDescription = stringResource(Res.string.content_desc_add_task)
-            )
-        }
+    FloatingActionButton(
+        onClick = { onNavigateToTask(0) },
+        modifier = Modifier
+            .padding(16.dp),
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.add_2_24px),
+            contentDescription = stringResource(Res.string.content_desc_add_task)
+        )
     }
 }
 
