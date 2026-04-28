@@ -3,7 +3,6 @@ package ru.den.writes.code
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,6 +21,8 @@ import ru.den.writes.code.ui.components.AppTopBar
 import ru.den.writes.code.ui.settings.SettingsViewModel
 import ru.den.writes.code.ui.theme.AppTheme
 import org.koin.core.KoinApplication as KoinAppDeclaration
+
+expect fun Modifier.fillMaxSizeModifierWithKbdHandling(): Modifier
 
 @Composable
 @Preview
@@ -49,7 +50,7 @@ fun App(
             ) { paddingValues ->
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxSizeModifierWithKbdHandling()
                         .background(MaterialTheme.colorScheme.background)
                         .padding(paddingValues)
                 ) {
