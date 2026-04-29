@@ -11,7 +11,17 @@ pluginManagement {
             }
         }
         mavenCentral()
+        mavenLocal()
         gradlePluginPortal()
+    }
+
+    plugins {
+        val composeVersion = if (providers.gradleProperty("compose.aurora.enabled").orNull == "true") {
+            providers.gradleProperty("compose.version.aurora").get()
+        } else {
+            providers.gradleProperty("compose.version.upstream").get()
+        }
+        id("org.jetbrains.compose").version(composeVersion) apply false
     }
 }
 plugins {
@@ -27,6 +37,7 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+        mavenLocal()
         mavenCentral()
     }
 }
@@ -34,3 +45,4 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":server")
 include(":shared")
+include(":compResAuroraCompat")

@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CorporateTaskTracker</string>
+    <string name="app_name">Corporate Task Tracker</string>
     <string name="btn_click_me">Click me!</string>
     <string name="priority_high">High</string>
     <string name="priority_medium">Medium</string>
     <string name="priority_low">Low</string>
     <string name="select_priority">Select priority</string>
+    <string name="title_tasks">Tasks</string>
+    <string name="title_task_detail">Task Details</string>
+    <string name="title_settings">Settings</string>
+    <string name="content_desc_back">Back</string>
+    <string name="content_desc_settings">Settings</string>
+    <string name="empty_task_list">Task list is empty</string>
+    <string name="content_desc_add_task">Add task</string>
+    <string name="title_new_task">New task</string>
+    <string name="title_edit_task">Edit task #%d</string>
+    <string name="label_task_name">Task name</string>
+    <string name="label_task_description">Detailed description</string>
+    <string name="label_task_completed">Task completed</string>
+    <string name="label_priority">Priority</string>
+    <string name="btn_create">Create</string>
+    <string name="btn_save_changes">Save changes</string>
+    <string name="btn_switch_light">Switch to Light ☀️</string>
+    <string name="btn_switch_dark">Switch to Dark 🌙</string>
 </resources>

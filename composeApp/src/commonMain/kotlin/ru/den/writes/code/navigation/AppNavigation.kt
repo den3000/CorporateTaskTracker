@@ -1,6 +1,5 @@
 package ru.den.writes.code.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,7 +16,6 @@ import ru.den.writes.code.ui.tasks.TaskListScreen
 fun AppNavigation(
     navController: NavHostController,
     settingsViewModel: SettingsViewModel,
-    paddingValues: PaddingValues,
     isDarkTheme: Boolean
 ) {
     NavHost(
@@ -26,7 +24,6 @@ fun AppNavigation(
     ) {
         composable<TaskListRoute> {
             TaskListScreen(
-                paddingValues = paddingValues,
                 onNavigateToTask = { taskId ->
                     navController.navigate(TaskDetailRoute(taskId))
                 }
@@ -37,7 +34,6 @@ fun AppNavigation(
             val route: TaskDetailRoute = backStackEntry.toRoute()
             TaskDetailScreen(
                 viewModel = koinViewModel { parametersOf(route.taskId) },
-                paddingValues = paddingValues,
                 onBack = {
                     navController.popBackStack()
                 }
@@ -47,7 +43,6 @@ fun AppNavigation(
         composable<SettingsRoute> {
             SettingsScreen(
                 viewModel = settingsViewModel,
-                paddingValues = paddingValues,
                 isDarkTheme = isDarkTheme,
             )
         }
