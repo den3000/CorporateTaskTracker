@@ -36,7 +36,7 @@ buildTools {
 
     // Run on device
     run {
-        host = "192.168.0.18"
+        host = "10.180.240.243"
         user = "defaultuser"
         port = 22
         validate = true
