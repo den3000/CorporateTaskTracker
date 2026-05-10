@@ -30,4 +30,8 @@ class TaskListViewModel(
         repository.upsertTask(task)
     }
 
+    fun deleteTask(task: Task) = viewModelScope.launch {
+        repository.deleteTask(task)
+    }
+
 }
