@@ -6,7 +6,9 @@ import org.koin.dsl.module
 import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.data.local.AppDatabase
 import ru.den.writes.code.data.local.getRoomDatabase
+import ru.den.writes.code.data.remote.RemoteTaskDataSource
 import ru.den.writes.code.data.repository.LocalTaskRepository
+import ru.den.writes.code.network.BaseUrlProvider
 import ru.den.writes.code.network.NetworkMonitor
 import ru.den.writes.code.ui.settings.SettingsViewModel
 import ru.den.writes.code.ui.tasks.TaskDetailViewModel
@@ -14,8 +16,10 @@ import ru.den.writes.code.ui.tasks.TaskListViewModel
 
 val appModule = module {
     // Сеть
+    single { BaseUrlProvider() }
     single { HttpClient() }
-    single { NetworkMonitor(get()) }
+    single { NetworkMonitor(get(), get()) }
+    single { RemoteTaskDataSource(get(), get()) }
 
     // База данных
     single { getRoomDatabase(get()) }
