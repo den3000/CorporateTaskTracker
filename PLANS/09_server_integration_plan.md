@@ -9,7 +9,7 @@ the existing `shared` module models, moving from an in-memory server to a persis
 1.  **Dependency Setup:** Configure `server/build.gradle.impl` to depend on the `shared` module.
 2.  **Code Reuse:** Ensure `server` uses the exact same `Task` and `TaskPriority` classes from `shared/src/commonMain` for both logic and serialization.
 
-## 🚀 Phase 2: "Mock" Server Implementation (In-Memory)
+## ✅ Phase 2: Basic Backend Draft (Text-based) (DONE)
 *Target: `server/` - API Endpoints only*
 
 1.  **Endpoint Development:** Implement Ktor routes using a simple `MutableList<Task>` in-memory storage:
