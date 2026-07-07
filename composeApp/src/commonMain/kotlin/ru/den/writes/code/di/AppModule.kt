@@ -6,8 +6,9 @@ import org.koin.dsl.module
 import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.data.local.AppDatabase
 import ru.den.writes.code.data.local.getRoomDatabase
-import ru.den.writes.code.data.remote.RemoteTaskDataSource
-import ru.den.writes.code.data.repository.LocalTaskRepository
+import ru.den.writes.code.data.remote.RemoteTasksDataSource
+import ru.den.writes.code.data.repository.LocalTasksDataSource
+import ru.den.writes.code.data.repository.TasksRepository
 import ru.den.writes.code.network.BaseUrlProvider
 import ru.den.writes.code.network.NetworkMonitor
 import ru.den.writes.code.ui.settings.SettingsViewModel
@@ -19,14 +20,14 @@ val appModule = module {
     single { BaseUrlProvider() }
     single { HttpClient() }
     single { NetworkMonitor(get(), get()) }
-    single { RemoteTaskDataSource(get(), get()) }
+    single { RemoteTasksDataSource(get(), get()) }
 
     // База данных
     single { getRoomDatabase(get()) }
     single { get<AppDatabase>().taskDao() }
-    
-    // Репозиторий
-    single { LocalTaskRepository(get()) }
+    single { LocalTasksDataSource(get()) }
+
+    single { TasksRepository(get(), get(), get()) }
 
     // ViewModels
     viewModelOf(::ServerStatusViewModel)

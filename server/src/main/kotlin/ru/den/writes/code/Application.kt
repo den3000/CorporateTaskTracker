@@ -1,10 +1,13 @@
 package ru.den.writes.code
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.server.request.receiveText
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.delete
@@ -23,13 +26,13 @@ fun main() {
 }
 
 fun Application.module() {
-//    install(ContentNegotiation) {
-//        json(Json {
-//            prettyPrint = true
-//            isLenient = true
-//            ignoreUnknownKeys = true
-//        })
-//    }
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+        })
+    }
 
     routing {
         get("/") {
@@ -42,24 +45,25 @@ fun Application.module() {
 
         route("/api/tasks") {
             get {
-                // call.respond(tasks)
-                // while no content negotiation added
-                call.respondText(tasks.toString(), status = HttpStatusCode.OK)
+                call.respond(tasks)
             }
             post {
-                // val task = call.receive<Task>()
-                // tasks.add(task)
-                // call.respond(HttpStatusCode.Created, task)
-
-                // while no content negotiation added
-                val body = call.receiveText()
-                val task = Json.decodeFromString<Task>(body)
+                val received = call.receive<Task>()
+                // Клиент присылает id=0 для новых задач — назначаем серверный id.
+                // Если id уже задан (например, из локальной БД), обновляем/добавляем как есть.
+                val task = if (received.id == 0) {
+                    val nextId = (tasks.maxOfOrNull { it.id } ?: 0) + 1
+                    received.copy(id = nextId)
+                } else {
+                    tasks.removeIf { it.id == received.id }
+                    received
+                }
                 tasks.add(task)
-                call.respondText("Task added: ${task.title}", status = HttpStatusCode.Created)
+                call.respond(HttpStatusCode.Created, task)
             }
             delete("/{id}") {
-                val id = call.parameters["id"]
-                val removed = tasks.removeIf { it.id.toString() == id }
+                val id = call.parameters["id"]?.toIntOrNull()
+                val removed = tasks.removeIf { it.id == id }
                 if (removed) {
                     call.respond(HttpStatusCode.OK, "Task deleted")
                 } else {

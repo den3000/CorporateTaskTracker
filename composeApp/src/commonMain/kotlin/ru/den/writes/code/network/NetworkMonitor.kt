@@ -4,9 +4,10 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import ru.den.writes.code.getPlatform
-import ru.den.writes.code.config.AppConfig
+import kotlinx.coroutines.flow.single
 
 enum class ServerStatus {
     CONNECTING, ONLINE, OFFLINE
@@ -40,5 +41,12 @@ class NetworkMonitor(
             // Периодический пинг каждые 5 секунд для обновления статуса
             delay(5000)
         }
+    }
+
+    suspend fun isOnline(): Boolean = try {
+        val response = httpClient.get("$serverUrl/api/ping")
+        response.status.value in 200..299
+    } catch (e: Exception) {
+        false
     }
 }

@@ -7,7 +7,11 @@ import ru.den.writes.code.data.local.toDomain
 import ru.den.writes.code.data.local.toEntity
 import ru.den.writes.code.domain.model.Task
 
-class LocalTaskRepository(
+/**
+ * DataSource для работы с локальной базой данных.
+ * Отвечает за CRUD операции с локальным хранилищем.
+ */
+class LocalTasksDataSource(
     private val taskDao: TaskDao
 ) {
     fun subscribeAllTasks(): Flow<List<Task>> {
@@ -16,12 +20,6 @@ class LocalTaskRepository(
             .map { entities ->
                 entities.map { it.toDomain() }
             }
-    }
-
-    suspend fun getAllTasks(): List<Task> {
-        return taskDao
-            .getAllTasks()
-            .map { it.toDomain() }
     }
 
     suspend fun upsertTask(task: Task) {

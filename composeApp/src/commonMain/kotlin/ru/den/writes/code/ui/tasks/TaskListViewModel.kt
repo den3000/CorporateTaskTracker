@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ru.den.writes.code.data.repository.LocalTaskRepository
+import ru.den.writes.code.data.repository.TasksRepository
 import ru.den.writes.code.domain.model.Task
 
 class TaskListViewModel(
-    private val repository: LocalTaskRepository
+    private val repository: TasksRepository
 ) : ViewModel() {
 
     val isRefreshing: StateFlow<Boolean>
@@ -22,6 +22,7 @@ class TaskListViewModel(
         viewModelScope.launch {
             isRefreshing.value = true
             delay(1000)
+            repository.forceSync()
             isRefreshing.value = false
         }
     }
@@ -36,10 +37,6 @@ class TaskListViewModel(
         repository
             .getTaskById(taskId)
             ?.let { repository.upsertTask(it.copy(isCompleted = !it.isCompleted)) }
-    }
-
-    fun addOrUpdateTask(task: Task) = viewModelScope.launch {
-        repository.upsertTask(task)
     }
 
     fun deleteTask(task: Task) = viewModelScope.launch {
