@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import ru.den.writes.code.data.repository.LocalTaskRepository
+import ru.den.writes.code.data.repository.TasksRepository
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
 
 class TaskDetailViewModel(
     val taskId: Int,
-    private val repository: LocalTaskRepository
+    private val repository: TasksRepository
 ) : ViewModel() {
 
     val taskTitle: StateFlow<String>

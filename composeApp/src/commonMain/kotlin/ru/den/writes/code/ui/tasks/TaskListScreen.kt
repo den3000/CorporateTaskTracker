@@ -3,17 +3,18 @@ package ru.den.writes.code.ui.tasks
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,12 +40,15 @@ fun TaskListScreen(
     onNavigateToTask: (Int) -> Unit
 ) {
     val tasks by viewModel.tasks.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
 
     TaskListContent(
         tasks = tasks,
         onToggleCompletion = { viewModel.toggleTaskCompletion(it) },
         onNavigateToTask = onNavigateToTask,
-        onDeleteTask = { viewModel.deleteTask(it) }
+        onDeleteTask = { viewModel.deleteTask(it) },
+        isRefreshing = isRefreshing,
+        onRefresh = { viewModel.refreshTasks() },
     )
 }
 
@@ -54,68 +58,101 @@ fun TaskListContent(
     onToggleCompletion: (Int) -> Unit,
     onNavigateToTask: (Int) -> Unit,
     onDeleteTask: (Task) -> Unit,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit
 ) {
-    if (tasks.isEmpty()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(Res.string.empty_task_list),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    } else {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize()
+    ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            if (tasks.isEmpty()) {
+                item { EmptyStateItem() }
+                return@LazyColumn
+            }
+
             items(
                 items = tasks,
                 key = { it.id }
             ) { task ->
-                val dismissState = rememberSwipeToDismissBoxState()
-                SwipeToDismissBox(
-                    state = dismissState,
-                    enableDismissFromStartToEnd = false,
-                    backgroundContent = {
-                        val color = when (dismissState.dismissDirection) {
-                            SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
-                            else -> MaterialTheme.colorScheme.background
-                        }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(color)
-                                .padding(horizontal = 20.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.settings_24px),
-                                contentDescription = stringResource(Res.string.content_desc_back),
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    },
-                    onDismiss = { onDeleteTask(task) }
-                ) {
-                    TaskItem(
-                        task = task,
-                        onToggleCompletion = { onToggleCompletion(task.id) },
-                        onClick = { onNavigateToTask(task.id) }
-                    )
-                }
-
+                DismissibleTaskItem(
+                    task = task,
+                    onToggleCompletion = onToggleCompletion,
+                    onNavigateToTask = onNavigateToTask,
+                    onDeleteTask = onDeleteTask
+                )
             }
         }
     }
 }
+
+/**
+ * Компонент для отображения состояния, когда список пуст.
+ */
+@Composable
+private fun LazyItemScope.EmptyStateItem() {
+    Box(
+        modifier = Modifier.fillParentMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(Res.string.empty_task_list),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+/**
+ * Компонент карточки задачи с поддержкой Swipe-to-Dismiss
+ */
+@Composable
+private fun DismissibleTaskItem(
+    task: Task,
+    onToggleCompletion: (Int) -> Unit,
+    onNavigateToTask: (Int) -> Unit,
+    onDeleteTask: (Task) -> Unit,
+) {
+    val dismissState = rememberSwipeToDismissBoxState()
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        backgroundContent = {
+            val color = when (dismissState.dismissDirection) {
+                SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
+                else -> MaterialTheme.colorScheme.background
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color)
+                    .padding(horizontal = 20.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.settings_24px),
+                    contentDescription = stringResource(Res.string.content_desc_back),
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        },
+        onDismiss = { onDeleteTask(task) }
+    ) {
+        TaskItem(
+            task = task,
+            onToggleCompletion = { onToggleCompletion(task.id) },
+            onClick = { onNavigateToTask(task.id) }
+        )
+    }
+}
+
 
 @Preview
 @Composable
@@ -131,6 +168,8 @@ fun TaskListScreenPreview() {
             onToggleCompletion = {},
             onNavigateToTask = {},
             onDeleteTask = {},
+            isRefreshing = true,
+            onRefresh = {},
         )
     }
 }
@@ -149,6 +188,8 @@ fun TaskListScreenPreviewDark() {
             onToggleCompletion = {},
             onNavigateToTask = {},
             onDeleteTask = {},
+            isRefreshing = false,
+            onRefresh = {},
         )
     }
 }

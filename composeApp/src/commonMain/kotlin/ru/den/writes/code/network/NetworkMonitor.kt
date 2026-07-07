@@ -4,9 +4,10 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import ru.den.writes.code.getPlatform
-import ru.den.writes.code.config.AppConfig
+import kotlinx.coroutines.flow.single
 
 enum class ServerStatus {
     CONNECTING, ONLINE, OFFLINE
@@ -14,20 +15,10 @@ enum class ServerStatus {
 
 class NetworkMonitor(
     private val httpClient: HttpClient,
+    private val baseUrlProvider: BaseUrlProvider,
 ) {
-    // В зависимости от платформы используем нужный адрес для эмулятора/симулятора
-    // или общий IP для реальных устройств из файла config.properties.
-    private val serverUrl: String = if (AppConfig.SERVER_IP.isBlank() || AppConfig.SERVER_IP.contains("X")) {
-        // Режим симулятора/эмулятора (если IP не был изменен)
-        if (getPlatform().name.contains("Android")) {
-            "http://10.0.2.2:8080" // Android Emulator
-        } else {
-            "http://127.0.0.1:8080" // iOS Simulator (или localhost)
-        }
-    } else {
-        // Режим реального устройства в локальной Wi-Fi сети
-        "http://${AppConfig.SERVER_IP}:8080"
-    }
+    private val serverUrl: String
+        get() = baseUrlProvider.baseUrl
 
     fun observeStatus(): Flow<ServerStatus> = flow {
         emit(ServerStatus.CONNECTING)
@@ -50,5 +41,12 @@ class NetworkMonitor(
             // Периодический пинг каждые 5 секунд для обновления статуса
             delay(5000)
         }
+    }
+
+    suspend fun isOnline(): Boolean = try {
+        val response = httpClient.get("$serverUrl/api/ping")
+        response.status.value in 200..299
+    } catch (e: Exception) {
+        false
     }
 }
