@@ -235,6 +235,8 @@ dependencies {
 
 compose.resources {
     generateResClass = always
+    // Пакет сгенерированного Res закреплён явно, чтобы не зависеть от имени модуля.
+    packageOfResClass = "ru.den.writes.code.resources"
 }
 
 apply(from = "aurora-tasks.gradle.kts")

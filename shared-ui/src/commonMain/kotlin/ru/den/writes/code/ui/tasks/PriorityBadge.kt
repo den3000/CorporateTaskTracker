@@ -13,10 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import corporatetasktracker.composeapp.generated.resources.Res
-import corporatetasktracker.composeapp.generated.resources.priority_high
-import corporatetasktracker.composeapp.generated.resources.priority_low
-import corporatetasktracker.composeapp.generated.resources.priority_medium
+import ru.den.writes.code.resources.Res
+import ru.den.writes.code.resources.priority_high
+import ru.den.writes.code.resources.priority_low
+import ru.den.writes.code.resources.priority_medium
 import org.jetbrains.compose.resources.stringResource
 import ru.den.writes.code.domain.model.TaskPriority
 

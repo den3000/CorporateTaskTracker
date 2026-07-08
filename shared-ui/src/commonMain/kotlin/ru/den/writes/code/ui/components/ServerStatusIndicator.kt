@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import corporatetasktracker.composeapp.generated.resources.Res
-import corporatetasktracker.composeapp.generated.resources.cloud_alert_24px
-import corporatetasktracker.composeapp.generated.resources.cloud_off_24px
+import ru.den.writes.code.resources.Res
+import ru.den.writes.code.resources.cloud_alert_24px
+import ru.den.writes.code.resources.cloud_off_24px
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.ServerStatusViewModel

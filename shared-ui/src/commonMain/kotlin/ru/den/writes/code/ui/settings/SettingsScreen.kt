@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import corporatetasktracker.composeapp.generated.resources.Res
-import corporatetasktracker.composeapp.generated.resources.btn_click_me
-import corporatetasktracker.composeapp.generated.resources.btn_switch_dark
-import corporatetasktracker.composeapp.generated.resources.btn_switch_light
-import corporatetasktracker.composeapp.generated.resources.compose_multiplatform
+import ru.den.writes.code.resources.Res
+import ru.den.writes.code.resources.btn_click_me
+import ru.den.writes.code.resources.btn_switch_dark
+import ru.den.writes.code.resources.btn_switch_light
+import ru.den.writes.code.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ru.den.writes.code.Greeting

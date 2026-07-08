@@ -42,7 +42,7 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
+include(":shared-ui")
 include(":server")
 include(":shared")
 include(":compResAuroraCompat")
