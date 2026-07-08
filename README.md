@@ -9,14 +9,14 @@ application module that depends on it:
   - [commonMain](./shared-ui/src/commonMain/kotlin) is for code that’s common for all targets.
   - Platform folders ([androidMain](./shared-ui/src/androidMain/kotlin), [iosMain](./shared-ui/src/iosMain/kotlin),
     [linuxMain](./shared-ui/src/linuxMain/kotlin)) hold the platform `actual` declarations.
-* [/androidApp](./androidApp/src) — thin Android application (`MainActivity`, launcher manifest, icons)
+* [/apps/androidApp](./apps/androidApp/src) — thin Android application (`MainActivity`, launcher manifest, icons)
   depending on `:shared-ui`. Built for the upstream variant (default).
-* [/auroraApp](./auroraApp/src) — Aurora OS application: Linux executables, the entry point,
+* [/apps/auroraApp](./apps/auroraApp/src) — Aurora OS application: Linux executables, the entry point,
   RPM packaging and SSH deploy. Built only for the Aurora variant
   (`-Pcompose.aurora.enabled=true`), which globally switches the Compose plugin to the Aurora fork.
 * [/shared](./shared/src) — domain models shared across all targets (and the server).
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
+* [/apps/iosApp](./apps/iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
   you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
 
 * [/server](./server/src/main/kotlin) is for the Ktor server application.
@@ -50,7 +50,7 @@ in your IDE’s toolbar or run it directly from the terminal:
 ### Build and Run iOS Application
 
 To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+in your IDE’s toolbar or open the [/apps/iosApp](./apps/iosApp) directory in Xcode and run it from there.
 
 ### Build and Run Aurora OS Application
 

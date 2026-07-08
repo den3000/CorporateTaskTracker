@@ -52,6 +52,8 @@ include(":compResAuroraCompat")
 val auroraOn = providers.gradleProperty("compose.aurora.enabled").orNull == "true"
 if (auroraOn) {
     include(":auroraApp")
+    project(":auroraApp").projectDir = file("apps/auroraApp")
 } else {
     include(":androidApp")
+    project(":androidApp").projectDir = file("apps/androidApp")
 }
