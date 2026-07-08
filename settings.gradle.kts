@@ -46,3 +46,12 @@ include(":shared-ui")
 include(":server")
 include(":shared")
 include(":compResAuroraCompat")
+
+// Приложения-таргеты подключаются по варианту сборки:
+// upstream (Android/iOS) — :androidApp; Aurora — :auroraApp (добавляется в фазе 4).
+val auroraOn = providers.gradleProperty("compose.aurora.enabled").orNull == "true"
+if (auroraOn) {
+    // include(":auroraApp") — подключается в фазе 4
+} else {
+    include(":androidApp")
+}
