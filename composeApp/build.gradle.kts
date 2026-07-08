@@ -1,7 +1,20 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 val Project.auroraEnabled: Boolean
     get() = findProperty("compose.aurora.enabled") == "true"
+
+// IP Aurora-устройства для деплоя по SSH.
+// Приоритет: терминал (-P) -> local.properties -> дефолт.
+val auroraDeviceIp: String = run {
+    val localProperties = Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.exists()) file.inputStream().use { load(it) }
+    }
+    (project.findProperty("AURORA_DEVICE_IP") as? String)
+        ?: localProperties.getProperty("AURORA_DEVICE_IP")
+        ?: "192.168.0.22"
+}
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -36,7 +49,7 @@ buildTools {
 
     // Run on device
     run {
-        host = "10.180.240.243"
+        host = auroraDeviceIp
         user = "defaultuser"
         port = 22
         validate = true
