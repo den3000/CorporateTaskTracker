@@ -51,7 +51,7 @@ include(":compResAuroraCompat")
 // upstream (Android/iOS) — :androidApp; Aurora — :auroraApp (добавляется в фазе 4).
 val auroraOn = providers.gradleProperty("compose.aurora.enabled").orNull == "true"
 if (auroraOn) {
-    // include(":auroraApp") — подключается в фазе 4
+    include(":auroraApp")
 } else {
     include(":androidApp")
 }
