@@ -1,22 +1,25 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Server.
+This is a Kotlin Multiplatform project targeting Android, iOS, Aurora OS, Server.
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+The shared Compose UI lives in a library module, while each platform has a thin
+application module that depends on it:
+
+* [/shared-ui](./shared-ui/src) — KMP **library** with the shared Compose UI, view models,
+  data/repository/network layers and DI. It declares the Android/iOS/Linux targets, owns the
+  Room database (+ KSP), and produces the iOS `ComposeApp` framework.
+  - [commonMain](./shared-ui/src/commonMain/kotlin) is for code that’s common for all targets.
+  - Platform folders ([androidMain](./shared-ui/src/androidMain/kotlin), [iosMain](./shared-ui/src/iosMain/kotlin),
+    [linuxMain](./shared-ui/src/linuxMain/kotlin)) hold the platform `actual` declarations.
+* [/androidApp](./androidApp/src) — thin Android application (`MainActivity`, launcher manifest, icons)
+  depending on `:shared-ui`. Built for the upstream variant (default).
+* [/auroraApp](./auroraApp/src) — Aurora OS application: Linux executables, the entry point,
+  RPM packaging and SSH deploy. Built only for the Aurora variant
+  (`-Pcompose.aurora.enabled=true`), which globally switches the Compose plugin to the Aurora fork.
+* [/shared](./shared/src) — domain models shared across all targets (and the server).
 
 * [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
   you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
 
 * [/server](./server/src/main/kotlin) is for the Ktor server application.
-
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
-  can add code to the platform-specific folders here too.
 
 ### Build and Run Android Application
 
@@ -24,11 +27,11 @@ To build and run the development version of the Android app, use the run configu
 in your IDE’s toolbar or build it directly from the terminal:
 - on macOS/Linux
   ```shell
-  ./gradlew :composeApp:assembleDebug
+  ./gradlew :androidApp:assembleDebug
   ```
 - on Windows
   ```shell
-  .\gradlew.bat :composeApp:assembleDebug
+  .\gradlew.bat :androidApp:assembleDebug
   ```
 
 ### Build and Run Server
@@ -48,6 +51,18 @@ in your IDE’s toolbar or run it directly from the terminal:
 
 To build and run the development version of the iOS app, use the run configuration from the run widget
 in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+
+### Build and Run Aurora OS Application
+
+The Aurora variant globally switches the Compose plugin to the Aurora fork, so it builds in a separate
+Gradle invocation via `-Pcompose.aurora.enabled=true`. It requires the Aurora SDK and (for deploy) a
+device reachable at `AURORA_DEVICE_IP` (see [NETWORK_CONFIG_README.md](./NETWORK_CONFIG_README.md)).
+```shell
+# compile-only check (works without the Aurora SDK)
+./gradlew -Pcompose.aurora.enabled=true :auroraApp:compileKotlinLinuxX64
+# full build + RPM package + deploy to a device (needs Aurora SDK + device)
+./gradlew -Pcompose.aurora.enabled=true :auroraApp:appRunReleaseAfterBuild
+```
 
 ---
 
