@@ -23,10 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.den.writes.code.resources.Res
-import ru.den.writes.code.resources.content_desc_back
-import ru.den.writes.code.resources.empty_task_list
-import ru.den.writes.code.resources.settings_24px
+import ru.den.writes.code.generated.resources.Res
+import ru.den.writes.code.generated.resources.content_desc_back
+import ru.den.writes.code.generated.resources.empty_task_list
+import ru.den.writes.code.generated.resources.settings_24px
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import ru.den.writes.code.resources.Res
-import ru.den.writes.code.resources.add_2_24px
-import ru.den.writes.code.resources.content_desc_add_task
+import ru.den.writes.code.generated.resources.Res
+import ru.den.writes.code.generated.resources.add_2_24px
+import ru.den.writes.code.generated.resources.content_desc_add_task
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ru.den.writes.code.navigation.TaskDetailRoute

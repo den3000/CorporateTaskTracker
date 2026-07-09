@@ -173,5 +173,9 @@ dependencies {
 compose.resources {
     generateResClass = always
     // Пакет сгенерированного Res закреплён явно, чтобы не зависеть от имени модуля.
-    packageOfResClass = "ru.den.writes.code.resources"
+    // ВАЖНО: суффикс `.generated.resources` обязателен — полифил ресурсов Авроры
+    // (compResAuroraCompat, ResourceReader.linux.kt) вычленяет путь через
+    // substringAfter(".generated.resources/"). Без этого суффикса на Авроре
+    // не грузится ни один ресурс (белый экран).
+    packageOfResClass = "ru.den.writes.code.generated.resources"
 }
