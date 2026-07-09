@@ -49,6 +49,12 @@ switches, **at `settings.gradle.kts` level**, the whole Compose Gradle plugin ve
 
 To build/run Aurora, pass `-Pcompose.aurora.enabled=true`. Everything else defaults to upstream.
 
+**Where the Aurora fork resolves from.** In the Aurora variant, `settings.gradle.kts` uses a local
+maven folder next to the project (default `../aurora-maven-0.0.3`, override with `-PauroraMavenPath=`)
+instead of the shared `~/.m2` — `mavenLocal()` is used only for the upstream variant. Populate the
+folder from the aurora-maven tarball (branch `aurora-0.0.3`); the `0.0.4` bundle is also kept locally
+at `../aurora-maven-0.0.4` for the planned migration. These folders live outside the git repo.
+
 ## Commands
 
 ```bash
@@ -106,5 +112,7 @@ Aurora link/RPM/deploy require the **Aurora SDK** and a device reachable at `AUR
 
 Migration to **aurora-maven 0.0.4**: replace `compose.aurora.enabled` with a `buildVariant` property,
 per-variant build files (`build.aurora.gradle.kts`), and the `aurora-build` / `aurora-devices` plugins
-(splitting the old monolithic `auroraBuildTools`). Gated on 0.0.4 artifacts in `~/.m2` + Aurora SDK
-`5.2.0.180`. See the module restructure plan for details.
+(splitting the old monolithic `auroraBuildTools`). The 0.0.4 artifacts are already available locally at
+`../aurora-maven-0.0.4` (point `auroraMavenPath` there). The demo targets Aurora SDK `5.2.0.180`; the
+SDK installed locally is the **Build Tools (BT)** variant `5.2.0.45` — may need updating for 0.0.4.
+See the module restructure plan for details.
