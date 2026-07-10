@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.androidx.room) apply false
 
-    alias(libs.plugins.auroraBuildTools) apply false
     alias(libs.plugins.spotless) apply true
 }
 
