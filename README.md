@@ -21,10 +21,13 @@ Compose, переиспользуя код Android/iOS.
 
 Демка иллюстрирует те пункты доклада, которые видны прямо в исходниках:
 
-- **Подключение Compose-alpha (форк) для Авроры** — Gradle-обвязка, `settings.gradle.kts`, версии.
-- **Compose Preview** — стаб превью для Авроры (`shared-ui/src/previewStub`).
-- **Дополнение Koin** — полифил DI для Авроры (`shared-ui/src/koinCompat`).
-- **Compose Resources** — свой ридер ресурсов (модуль `compResAuroraCompat`).
+- **Подключение Compose-форка (`0.0.4-aurora`) для Авроры** — Gradle-обвязка, `settings.gradle.kts`,
+  переключатель `buildVariant`, плагины `aurora-build` / `aurora-devices`.
+- **Compose Preview** — стаб превью для Авроры (`shared-ui/src/previewStub`) — единственный
+  оставшийся полифил (в форке нет `ui-tooling-preview` под linux).
+- **Koin, навигация, ресурсы — настоящие форк-либы 0.0.4** (раньше полифилы): Koin `4.2.0-aurora`,
+  `compose.navigation`, `components-resources`. Под Аврору ресурсы — отдельный SVG-набор
+  (`shared-ui/aurora-composeResources`), т.к. форк-загрузчик рендерит только SVG.
 - **Фокус, клавиатура, отступы, тема** — `PlatformModifier.linux.kt` и обработка высоты клавиатуры.
 
 **Modal Bottom Sheet** в коде виден только как нерабочий/обойдённый случай — он упирается в
@@ -40,7 +43,7 @@ Compose, переиспользуя код Android/iOS.
 
 > ⚠️ Это учебная демка под **alpha/форк** Compose для Авроры. Она намеренно содержит полифилы и
 > обходы, которые в докладе и разбираются, — часть из них хрупкая и завязана на конкретную версию
-> форка (`0.0.3-aurora`) и ОС. Технические «подводные камни» собраны в [AGENTS.md](AGENTS.md).
+> форка (`0.0.4-aurora`) и ОС. Технические «подводные камни» собраны в [AGENTS.md](AGENTS.md).
 
 ---
 
@@ -59,13 +62,14 @@ Compose, переиспользуя код Android/iOS.
 - [`apps/androidApp`](./apps/androidApp/src) — тонкое Android-приложение (`MainActivity`, манифест,
   иконки), зависит от `:shared-ui`. Собирается в upstream-варианте (по умолчанию).
 - [`apps/auroraApp`](./apps/auroraApp/src) — приложение под Аврору: linux-исполняемые бинарники,
-  точка входа, упаковка RPM и деплой по SSH. Собирается только в Aurora-варианте.
+  точка входа, упаковка RPM и деплой по SSH (плагины `aurora-build` / `aurora-devices`). Собирается
+  только в Aurora-варианте (`-PbuildVariant=aurora`).
 - [`apps/iosApp`](./apps/iosApp/iosApp) — Xcode-проект iOS, потребляет фреймворк `ComposeApp`.
 - [`shared`](./shared/src) — доменные модели, общие для всех таргетов (и для сервера).
 - [`server`](./server/src/main/kotlin) — Ktor-сервер.
 
-Технологии: Kotlin 2.3.10, Compose Multiplatform 1.10.2 (upstream) / 0.0.3-aurora (форк), Koin, Room,
-Ktor.
+Технологии: Kotlin 2.3.10, Compose Multiplatform 1.10.2 (upstream) / 0.0.4-aurora (форк), Koin 4.1.1
+(upstream) / 4.2.0-aurora (форк), Room, Ktor.
 
 ## Как собрать и запустить
 
@@ -93,23 +97,27 @@ Ktor.
 ### Аврора ОС
 
 Aurora-вариант глобально переключает compose-плагин на форк, поэтому собирается **отдельным**
-запуском Gradle через `-Pcompose.aurora.enabled=true`. Нужен Aurora SDK, а для деплоя — устройство,
-доступное по `AURORA_DEVICE_IP` (см. [NETWORK_CONFIG_README.md](./NETWORK_CONFIG_README.md)).
+запуском Gradle через `-PbuildVariant=aurora`. Нужен Aurora SDK (RPM собирается в Docker), а для
+деплоя — устройство, доступное по `AURORA_DEVICE_IP` (см. [NETWORK_CONFIG_README.md](./NETWORK_CONFIG_README.md)).
 
 ```shell
 # только компиляция (работает без Aurora SDK)
-./gradlew -Pcompose.aurora.enabled=true :auroraApp:compileKotlinLinuxX64
-# полная сборка + RPM + деплой на устройство (нужен Aurora SDK + устройство)
-./gradlew -Pcompose.aurora.enabled=true :auroraApp:appRunReleaseAfterBuild
+./gradlew -PbuildVariant=aurora :auroraApp:compileKotlinLinuxX64
+# сборка RPM (init sysroot > link > RPM в Docker)
+./gradlew -PbuildVariant=aurora :auroraApp:buildReleasePipeline
+# сборка + деплой + запуск на устройстве
+./gradlew -PbuildVariant=aurora :auroraApp:runReleaseOnDevice
 ```
 
 ## Особенности сборки под Аврору (кратко)
 
-- **Флаг `compose.aurora.enabled`** переключает в `settings.gradle.kts` саму версию compose-плагина
-  (форк `0.0.3-aurora` vs upstream `1.10.2`). Плагин выбирается один раз на запуск, поэтому
-  **Android/iOS и Аврору нельзя собрать в одном запуске Gradle.**
+- **Свойство `buildVariant`** (`-PbuildVariant=aurora`) переключает в `settings.gradle.kts` версию
+  compose-плагина (форк `0.0.4-aurora` vs upstream `1.10.2`) и подключает плагины `aurora-build` /
+  `aurora-devices`. Плагин выбирается один раз на запуск, поэтому **Android/iOS и Аврору нельзя
+  собрать в одном запуске Gradle.** У `:shared-ui` два build-файла: `build.gradle.kts` (upstream) и
+  `build.aurora.gradle.kts` (Аврора).
 - **Форк Compose берётся из локальной maven-папки** — путь задаётся в `local.properties`
-  (`auroraMavenPath`, напр. `../aurora-maven-0.0.3`); если не задан, используется обычный `~/.m2`.
-- **Runtime-подводные камни Авроры** (сеть вне Main-диспетчера, обработка клавиатуры, кэширование
-  ViewModel в koin-полифиле) и прочие инварианты подробно описаны в [AGENTS.md](AGENTS.md) — читать
-  перед правками aurora-специфичного кода.
+  (`auroraMavenPath`, напр. `../aurora-maven-0.0.4`); если не задан, используется обычный `~/.m2`.
+- **Runtime-подводные камни Авроры** (сеть вне Main-диспетчера, обработка клавиатуры, корневой
+  `LocalViewModelStoreOwner`, SVG-иконки «tint запечён + явный размер») и прочие инварианты подробно
+  описаны в [AGENTS.md](AGENTS.md) — читать перед правками aurora-специфичного кода.

@@ -15,18 +15,22 @@ client platforms (Android, iOS, Aurora OS). Every app module depends on this one
 ## Layout
 
 - `commonMain` — platform-agnostic UI + logic; pins the Compose resources package to
-  `ru.den.writes.code.generated.resources` (the `.generated.resources` suffix is **required** by the
-  Aurora polyfill — see root `AGENTS.md`).
+  `ru.den.writes.code.generated.resources`.
 - `androidMain` / `iosMain` / `linuxMain` — platform `actual`s (`PlatformModifier.*`,
   `PlatformModule.*`, `Database.*`) and `iosMain/MainViewController.kt` (the framework entry).
-- `src/koinCompat`, `src/previewStub` — Aurora-only polyfills, added to `commonMain` when
-  `compose.aurora.enabled=true`.
+- `src/previewStub` — the only remaining Aurora polyfill (no-op `@Preview`), added to `commonMain`
+  in the Aurora variant. Koin, navigation and resources now use real fork libraries (see below).
+- `aurora-composeResources/` — Aurora-only SVG resource set (the fork loader renders SVG only);
+  wired via `compose.resources.customDirectory` in `build.aurora.gradle.kts`. See root `AGENTS.md`.
 
 ## Notes
 
-- Built as `com.android.library` + `androidTarget{}` (not the newer `androidLibrary{}` DSL).
+- **Two build files**, selected in `settings.gradle.kts` by `buildVariant`: `build.gradle.kts`
+  (upstream: `com.android.library` + `androidTarget{}` + iOS, Maven `libs.compose.*`/`libs.koin.*`)
+  and `build.aurora.gradle.kts` (Aurora: `linuxArm64/X64`, `compose.*` fork accessors incl.
+  `compose.navigation`, Koin `4.2.0-aurora`, lifecycle fork).
 - Compiled with `-Xexplicit-backing-fields`; consumers need `-Xskip-prerelease-check`.
-- Targets are variant-conditional: android+ios (upstream) **or** linux (Aurora). See root `AGENTS.md`.
-- **Aurora runtime gotchas** (network off Main, keyboard `fillMaxHeight` clamp, koinCompat ViewModel
-  caching) — see the "Aurora runtime gotchas" section in the root `AGENTS.md` before touching
-  `network/`, `koinCompat/`, or `PlatformModifier.linux.kt`.
+- **Aurora runtime gotchas** (network off Main, keyboard `fillMaxHeight` clamp, root
+  `LocalViewModelStoreOwner`, SVG icons "tint baked + explicit size") — see the "Aurora runtime
+  gotchas" section in the root `AGENTS.md` before touching `network/`, the UI icons, or
+  `PlatformModifier.linux.kt`.
