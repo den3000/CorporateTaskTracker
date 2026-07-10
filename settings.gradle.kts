@@ -11,15 +11,15 @@ pluginManagement {
             }
         }
         mavenCentral()
-        // Форк Compose под Аврору берётся из локальной папки рядом с проектом
-        // (относительный путь; параметр `auroraMavenPath`, дефолт ../aurora-maven-0.0.3),
-        // а не из общего ~/.m2. Для upstream-варианта — обычный mavenLocal().
-        if (providers.gradleProperty("compose.aurora.enabled").orNull == "true") {
-            maven {
-                url = rootDir.resolve(
-                    providers.gradleProperty("auroraMavenPath").orNull ?: "../aurora-maven-0.0.3"
-                ).canonicalFile.toURI()
-            }
+        // Локальный форк Compose под Аврору. Путь задаётся в local.properties (auroraMavenPath),
+        // например ../aurora-maven-0.0.3. Если значения нет — обычный mavenLocal().
+        // От compose.aurora.enabled НЕ зависит.
+        val auroraMavenPath = java.util.Properties().apply {
+            val f = rootDir.resolve("local.properties")
+            if (f.exists()) f.inputStream().use { load(it) }
+        }.getProperty("auroraMavenPath")
+        if (auroraMavenPath != null) {
+            maven { url = rootDir.resolve(auroraMavenPath).canonicalFile.toURI() }
         } else {
             mavenLocal()
         }
@@ -48,13 +48,14 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
-        // Форк Compose под Аврору — из локальной папки (см. pluginManagement выше).
-        if (providers.gradleProperty("compose.aurora.enabled").orNull == "true") {
-            maven {
-                url = rootDir.resolve(
-                    providers.gradleProperty("auroraMavenPath").orNull ?: "../aurora-maven-0.0.3"
-                ).canonicalFile.toURI()
-            }
+        // Локальный форк Compose под Аврору (см. pluginManagement выше): путь из
+        // local.properties (auroraMavenPath), иначе mavenLocal(). Не зависит от aurora-флага.
+        val auroraMavenPath = java.util.Properties().apply {
+            val f = rootDir.resolve("local.properties")
+            if (f.exists()) f.inputStream().use { load(it) }
+        }.getProperty("auroraMavenPath")
+        if (auroraMavenPath != null) {
+            maven { url = rootDir.resolve(auroraMavenPath).canonicalFile.toURI() }
         } else {
             mavenLocal()
         }

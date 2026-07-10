@@ -49,11 +49,13 @@ switches, **at `settings.gradle.kts` level**, the whole Compose Gradle plugin ve
 
 To build/run Aurora, pass `-Pcompose.aurora.enabled=true`. Everything else defaults to upstream.
 
-**Where the Aurora fork resolves from.** In the Aurora variant, `settings.gradle.kts` uses a local
-maven folder next to the project (default `../aurora-maven-0.0.3`, override with `-PauroraMavenPath=`)
-instead of the shared `~/.m2` — `mavenLocal()` is used only for the upstream variant. Populate the
-folder from the aurora-maven tarball (branch `aurora-0.0.3`); the `0.0.4` bundle is also kept locally
-at `../aurora-maven-0.0.4` for the planned migration. These folders live outside the git repo.
+**Where the Aurora fork resolves from.** `settings.gradle.kts` reads `auroraMavenPath` from
+`local.properties` (machine-specific, git-ignored). If set (e.g. `auroraMavenPath=../aurora-maven-0.0.3`,
+resolved relative to the repo root), that local maven folder is used **instead of** `mavenLocal()`/`~/.m2`;
+if unset, it falls back to the standard `mavenLocal()`. This is independent of `compose.aurora.enabled`
+(applies to both variants). Populate the folder from the aurora-maven tarball (branch `aurora-0.0.3`);
+the `0.0.4` bundle is also kept locally at `../aurora-maven-0.0.4` for the planned migration. These
+folders live outside the git repo.
 
 ## Commands
 
