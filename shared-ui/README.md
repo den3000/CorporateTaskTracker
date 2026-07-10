@@ -27,3 +27,6 @@ client platforms (Android, iOS, Aurora OS). Every app module depends on this one
 - Built as `com.android.library` + `androidTarget{}` (not the newer `androidLibrary{}` DSL).
 - Compiled with `-Xexplicit-backing-fields`; consumers need `-Xskip-prerelease-check`.
 - Targets are variant-conditional: android+ios (upstream) **or** linux (Aurora). See root `AGENTS.md`.
+- **Aurora runtime gotchas** (network off Main, keyboard `fillMaxHeight` clamp, koinCompat ViewModel
+  caching) — see the "Aurora runtime gotchas" section in the root `AGENTS.md` before touching
+  `network/`, `koinCompat/`, or `PlatformModifier.linux.kt`.
