@@ -1,69 +1,115 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Aurora OS, Server.
+# Corporate Task Tracker
 
-The shared Compose UI lives in a library module, while each platform has a thin
-application module that depends on it:
+Демо-проект к докладу **«Пробуем Compose-alpha для ОС Аврора»**.
 
-* [/shared-ui](./shared-ui/src) — KMP **library** with the shared Compose UI, view models,
-  data/repository/network layers and DI. It declares the Android/iOS/Linux targets, owns the
-  Room database (+ KSP), and produces the iOS `ComposeApp` framework.
-  - [commonMain](./shared-ui/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Platform folders ([androidMain](./shared-ui/src/androidMain/kotlin), [iosMain](./shared-ui/src/iosMain/kotlin),
-    [linuxMain](./shared-ui/src/linuxMain/kotlin)) hold the platform `actual` declarations.
-* [/apps/androidApp](./apps/androidApp/src) — thin Android application (`MainActivity`, launcher manifest, icons)
-  depending on `:shared-ui`. Built for the upstream variant (default).
-* [/apps/auroraApp](./apps/auroraApp/src) — Aurora OS application: Linux executables, the entry point,
-  RPM packaging and SSH deploy. Built only for the Aurora variant
-  (`-Pcompose.aurora.enabled=true`), which globally switches the Compose plugin to the Aurora fork.
-* [/shared](./shared/src) — domain models shared across all targets (and the server).
+Простой трекер задач на **Kotlin Multiplatform / Compose Multiplatform**: список задач,
+создание/редактирование/удаление, приоритеты, отметка «выполнено», тёмная тема, индикатор статуса
+бэкенда и синхронизация с Ktor-сервером. Один и тот же Compose UI собирается под **Android, iOS и
+Аврора ОС** (на скриншотах в докладе — три устройства в ряд с одним и тем же экраном), бэкенд — на
+Ktor. Задача проекта — на живом приложении показать, насколько сегодня реально писать под Аврору на
+Compose, переиспользуя код Android/iOS.
 
-* [/apps/iosApp](./apps/iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## О докладе
 
-* [/server](./server/src/main/kotlin) is for the Ktor server application.
+- **Спикер:** Денис Супрун ([@DEN_WRITES_KOD](https://t.me/DEN_WRITES_KOD)) — 10+ лет в мобильной
+  разработке, участник программы бета-тестирования Аврора ОС, Аврора-энтузиаст и спикер.
+- **Конференция:** Mobius 2026 Spring (весна 2026, май).
+- **Идея:** пройти путь запуска типичного приложения под Аврору на Compose-alpha — что подключается
+  из коробки, чего не хватает и как это обойти.
 
-### Build and Run Android Application
+## Что можно посмотреть в коде
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :androidApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :androidApp:assembleDebug
-  ```
+Демка иллюстрирует те пункты доклада, которые видны прямо в исходниках:
 
-### Build and Run Server
+- **Подключение Compose-alpha (форк) для Авроры** — Gradle-обвязка, `settings.gradle.kts`, версии.
+- **Compose Preview** — стаб превью для Авроры (`shared-ui/src/previewStub`).
+- **Дополнение Koin** — полифил DI для Авроры (`shared-ui/src/koinCompat`).
+- **Compose Resources** — свой ридер ресурсов (модуль `compResAuroraCompat`).
+- **Фокус, клавиатура, отступы, тема** — `PlatformModifier.linux.kt` и обработка высоты клавиатуры.
 
-To build and run the development version of the server, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :server:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :server:run
-  ```
+**Modal Bottom Sheet** в коде виден только как нерабочий/обойдённый случай — он упирается в
+отсутствие `MainUIDispatcher` в Skiko-порте форка (в сообществе Aurora Developers уже есть порт с
+фиксом).
 
-### Build and Run iOS Application
+## Итоги доклада
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/apps/iosApp](./apps/iosApp) directory in Xcode and run it from there.
+Главный вывод: **время реально пришло — есть всё, чтобы взять и попробовать.** SDK и симулятор
+работают (в том числе на маках с M-чипами), есть собственно порт Compose и минимальный набор
+библиотек, а недостающее докручивается полифилами или обходится. Подробный разбор каждого пункта —
+в самом докладе.
 
-### Build and Run Aurora OS Application
-
-The Aurora variant globally switches the Compose plugin to the Aurora fork, so it builds in a separate
-Gradle invocation via `-Pcompose.aurora.enabled=true`. It requires the Aurora SDK and (for deploy) a
-device reachable at `AURORA_DEVICE_IP` (see [NETWORK_CONFIG_README.md](./NETWORK_CONFIG_README.md)).
-```shell
-# compile-only check (works without the Aurora SDK)
-./gradlew -Pcompose.aurora.enabled=true :auroraApp:compileKotlinLinuxX64
-# full build + RPM package + deploy to a device (needs Aurora SDK + device)
-./gradlew -Pcompose.aurora.enabled=true :auroraApp:appRunReleaseAfterBuild
-```
+> ⚠️ Это учебная демка под **alpha/форк** Compose для Авроры. Она намеренно содержит полифилы и
+> обходы, которые в докладе и разбираются, — часть из них хрупкая и завязана на конкретную версию
+> форка (`0.0.3-aurora`) и ОС. Технические «подводные камни» собраны в [AGENTS.md](AGENTS.md).
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## Структура проекта
+
+Общий Compose UI вынесен в модуль-библиотеку, а под каждую платформу — тонкий модуль-приложение,
+который от неё зависит:
+
+- [`shared-ui`](./shared-ui/src) — KMP-**библиотека**: общий Compose UI, ViewModel'и,
+  data/repository/network-слои и DI. Объявляет таргеты Android/iOS/Linux, держит базу Room (+ KSP)
+  и собирает iOS-фреймворк `ComposeApp`.
+  - [`commonMain`](./shared-ui/src/commonMain/kotlin) — общий код для всех таргетов;
+  - платформенные папки ([androidMain](./shared-ui/src/androidMain/kotlin),
+    [iosMain](./shared-ui/src/iosMain/kotlin), [linuxMain](./shared-ui/src/linuxMain/kotlin)) —
+    `actual`-реализации.
+- [`apps/androidApp`](./apps/androidApp/src) — тонкое Android-приложение (`MainActivity`, манифест,
+  иконки), зависит от `:shared-ui`. Собирается в upstream-варианте (по умолчанию).
+- [`apps/auroraApp`](./apps/auroraApp/src) — приложение под Аврору: linux-исполняемые бинарники,
+  точка входа, упаковка RPM и деплой по SSH. Собирается только в Aurora-варианте.
+- [`apps/iosApp`](./apps/iosApp/iosApp) — Xcode-проект iOS, потребляет фреймворк `ComposeApp`.
+- [`shared`](./shared/src) — доменные модели, общие для всех таргетов (и для сервера).
+- [`server`](./server/src/main/kotlin) — Ktor-сервер.
+
+Технологии: Kotlin 2.3.10, Compose Multiplatform 1.10.2 (upstream) / 0.0.3-aurora (форк), Koin, Room,
+Ktor.
+
+## Как собрать и запустить
+
+### Android
+
+```shell
+./gradlew :androidApp:assembleDebug        # macOS/Linux
+.\gradlew.bat :androidApp:assembleDebug     # Windows
+```
+
+### iOS
+
+Открыть [`apps/iosApp`](./apps/iosApp) в Xcode и запустить, либо собрать фреймворк:
+
+```shell
+./gradlew :shared-ui:linkDebugFrameworkIosSimulatorArm64
+```
+
+### Сервер (Ktor)
+
+```shell
+./gradlew :server:run        # поднимается на :8080
+```
+
+### Аврора ОС
+
+Aurora-вариант глобально переключает compose-плагин на форк, поэтому собирается **отдельным**
+запуском Gradle через `-Pcompose.aurora.enabled=true`. Нужен Aurora SDK, а для деплоя — устройство,
+доступное по `AURORA_DEVICE_IP` (см. [NETWORK_CONFIG_README.md](./NETWORK_CONFIG_README.md)).
+
+```shell
+# только компиляция (работает без Aurora SDK)
+./gradlew -Pcompose.aurora.enabled=true :auroraApp:compileKotlinLinuxX64
+# полная сборка + RPM + деплой на устройство (нужен Aurora SDK + устройство)
+./gradlew -Pcompose.aurora.enabled=true :auroraApp:appRunReleaseAfterBuild
+```
+
+## Особенности сборки под Аврору (кратко)
+
+- **Флаг `compose.aurora.enabled`** переключает в `settings.gradle.kts` саму версию compose-плагина
+  (форк `0.0.3-aurora` vs upstream `1.10.2`). Плагин выбирается один раз на запуск, поэтому
+  **Android/iOS и Аврору нельзя собрать в одном запуске Gradle.**
+- **Форк Compose берётся из локальной maven-папки** — путь задаётся в `local.properties`
+  (`auroraMavenPath`, напр. `../aurora-maven-0.0.3`); если не задан, используется обычный `~/.m2`.
+- **Runtime-подводные камни Авроры** (сеть вне Main-диспетчера, обработка клавиатуры, кэширование
+  ViewModel в koin-полифиле) и прочие инварианты подробно описаны в [AGENTS.md](AGENTS.md) — читать
+  перед правками aurora-специфичного кода.

@@ -96,6 +96,31 @@ Aurora link/RPM/deploy require the **Aurora SDK** and a device reachable at `AUR
 5. **Room KSP stays entirely in `:shared-ui`** (the only module declaring android/ios/linux targets).
    App modules declare no targets and no KSP.
 
+## Aurora runtime gotchas — hard-won, don't regress
+
+These only bite on Aurora (its Main dispatcher is stricter and the polyfills are simplified);
+Android/iOS are unaffected.
+
+1. **Keep blocking work off the Main dispatcher.** All HTTP (status polling, `isOnline()` before each
+   write, add/delete/get in `RemoteTasksDataSource`) runs on `Dispatchers.IO` (`flowOn` / `withContext`)
+   with a ping timeout. On Aurora a blocking call on Main freezes recomposition, navigation and gesture
+   animations. Note `Dispatchers.IO` is `internal` in common/native — import the `kotlinx.coroutines.IO`
+   extension (provided by Room), as `Database.kt` does. Keep the Qt keyboard poll
+   (`PlatformModifier.linux.kt`) on Main — Qt objects are thread-affine.
+
+2. **`fillMaxHeight(fraction)` throws if `fraction` is outside `(0, 1]`.** The Aurora keyboard modifier
+   derives the fraction from keyboard/window height; clamp it (apply a partial height only when
+   `kbdHeight in 1 until windowHeight`, else `1f`), or the app crashes when the keyboard opens before
+   the window is measured. Stabilize the 100 ms poll flow with `remember` + `distinctUntilChanged` so
+   the root modifier doesn't recompose the whole tree ~10×/sec (flicker/lag).
+
+3. **The koinCompat `koinViewModel` must cache the ViewModel.** ViewModels are registered as `factory`,
+   so resolving without caching creates a NEW instance every recomposition — resetting state
+   (e.g. `tasks.stateIn` → `emptyList`) and making the whole UI flicker. The polyfill resolves through
+   `ViewModelProvider.create(owner.viewModelStore, factory)` using the per-`NavBackStackEntry`
+   `LocalViewModelStoreOwner` (store caching + `onCleared`), and falls back to `remember` for VMs above
+   navigation (App root / TopAppBar have no owner). Don't revert it to a bare `koin.get()`.
+
 ## Entry points
 
 - Android: `apps/androidApp/.../MainActivity.kt` → `App(koinConfig = { androidContext(...) })`
