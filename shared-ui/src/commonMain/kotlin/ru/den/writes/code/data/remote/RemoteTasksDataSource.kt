@@ -35,7 +35,6 @@ class RemoteTasksDataSource(
             contentType(ContentType.Application.Json)
             setBody(json.encodeToString(task))
         }
-        Unit
     }
 
     /// Загружаем текущие задачи с сервера и обновляем поток
@@ -50,10 +49,9 @@ class RemoteTasksDataSource(
     /// Удаляем задачу с сервера
     suspend fun deleteTask(id: Int) = withContext(Dispatchers.IO) {
         httpClient.delete("$serverUrl/api/tasks/$id")
-        Unit
     }
 
-    /// Загружаем текущие задачи с сервера (сеть — на IO, не на Main)
+    /// Загружаем текущие задачи с сервера
     private suspend fun getTasks(): List<Task> = withContext(Dispatchers.IO) {
         val response = httpClient.get("$serverUrl/api/tasks")
         val text = response.bodyAsText()

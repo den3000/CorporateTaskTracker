@@ -22,14 +22,8 @@ private fun forceFetchKbdHeight(): Flow<Int> = flow {
 }
 
 actual fun Modifier.fillMaxSizeModifierWithKbdHandling(): Modifier = composed {
-    // remember + distinctUntilChanged: не пересоздаём поток на каждой рекомпозиции и реагируем
-    // только на реальное изменение высоты. Иначе корневой Box перерисовывается ~10 раз/сек —
-    // весь UI мигает и список лагает.
     val kbdHeight by remember { forceFetchKbdHeight().distinctUntilChanged() }.collectAsState(0)
     val windowHeight = LocalWindowInfo.current.containerSize.height
-
-    // fraction ОБЯЗАН быть в (0, 1] — иначе fillMaxHeight() бросает исключение и приложение падает
-    // (высота клавиатуры >= окна, либо окно ещё не измерено и windowHeight == 0).
     val fraction = if (kbdHeight in 1 until windowHeight)
         (windowHeight - kbdHeight).toFloat() / windowHeight
     else

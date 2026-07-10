@@ -11,9 +11,8 @@ pluginManagement {
             }
         }
         mavenCentral()
-        // Локальный форк Compose под Аврору. Путь задаётся в local.properties (auroraMavenPath),
-        // например ../aurora-maven-0.0.3. Если значения нет — обычный mavenLocal().
-        // От compose.aurora.enabled НЕ зависит.
+
+        // Локальный форк Compose под Аврору, путь из local.properties (auroraMavenPath), иначе mavenLocal()
         val auroraMavenPath = java.util.Properties().apply {
             val f = rootDir.resolve("local.properties")
             if (f.exists()) f.inputStream().use { load(it) }
@@ -23,6 +22,7 @@ pluginManagement {
         } else {
             mavenLocal()
         }
+
         gradlePluginPortal()
     }
 
@@ -48,8 +48,9 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
-        // Локальный форк Compose под Аврору (см. pluginManagement выше): путь из
-        // local.properties (auroraMavenPath), иначе mavenLocal(). Не зависит от aurora-флага.
+        mavenCentral()
+
+        // Локальный форк Compose под Аврору, путь из local.properties (auroraMavenPath), иначе mavenLocal()
         val auroraMavenPath = java.util.Properties().apply {
             val f = rootDir.resolve("local.properties")
             if (f.exists()) f.inputStream().use { load(it) }
@@ -59,7 +60,6 @@ dependencyResolutionManagement {
         } else {
             mavenLocal()
         }
-        mavenCentral()
     }
 }
 
