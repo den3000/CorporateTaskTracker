@@ -4,8 +4,11 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.network.BaseUrlProvider
@@ -27,11 +30,12 @@ class RemoteTasksDataSource(
         field = MutableStateFlow<List<Task>>(emptyList())
 
     /// Отправляем задачу на сервер
-    suspend fun addTask(task: Task) {
+    suspend fun addTask(task: Task) = withContext(Dispatchers.IO) {
         httpClient.post("$serverUrl/api/tasks") {
             contentType(ContentType.Application.Json)
             setBody(json.encodeToString(task))
         }
+        Unit
     }
 
     /// Загружаем текущие задачи с сервера и обновляем поток
@@ -44,15 +48,16 @@ class RemoteTasksDataSource(
     }
 
     /// Удаляем задачу с сервера
-    suspend fun deleteTask(id: Int) {
+    suspend fun deleteTask(id: Int) = withContext(Dispatchers.IO) {
         httpClient.delete("$serverUrl/api/tasks/$id")
+        Unit
     }
 
-    /// Загружаем текущие задачи с сервера
-    private suspend fun getTasks(): List<Task> {
+    /// Загружаем текущие задачи с сервера (сеть — на IO, не на Main)
+    private suspend fun getTasks(): List<Task> = withContext(Dispatchers.IO) {
         val response = httpClient.get("$serverUrl/api/tasks")
         val text = response.bodyAsText()
-        if (text.isBlank()) return emptyList()
-        return json.decodeFromString<List<Task>>(text)
+        if (text.isBlank()) return@withContext emptyList()
+        json.decodeFromString<List<Task>>(text)
     }
 }

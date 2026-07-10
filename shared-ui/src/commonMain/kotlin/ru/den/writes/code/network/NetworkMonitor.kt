@@ -2,12 +2,14 @@ package ru.den.writes.code.network
 
 import io.ktor.client.*
 import io.ktor.client.request.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 enum class ServerStatus {
     CONNECTING, ONLINE, OFFLINE
@@ -20,33 +22,35 @@ class NetworkMonitor(
     private val serverUrl: String
         get() = baseUrlProvider.baseUrl
 
+    /**
+     * Поток статуса сервера. ВАЖНО: весь опрос уходит на [Dispatchers.IO] через [flowOn],
+     * иначе блокирующий сетевой вызов выполняется на UI-потоке (Main) и подвешивает
+     * перерисовку/навигацию — особенно на Aurora, где Main-диспетчер строгий.
+     */
     fun observeStatus(): Flow<ServerStatus> = flow {
         emit(ServerStatus.CONNECTING)
         while (true) {
-            val nextStatus = try {
-                println("PAM Pinging server... $serverUrl")
-                val response = httpClient.get("$serverUrl/api/ping")
-                if (response.status.value in 200..299) {
-                    ServerStatus.ONLINE
-                } else {
-                    ServerStatus.OFFLINE
-                }
-            } catch (e: Exception) {
-                // Если сервер выключен или нет связи - упадёт с ошибкой
-                ServerStatus.OFFLINE
-            }
-
-            emit(nextStatus)
-
-            // Периодический пинг каждые 5 секунд для обновления статуса
+            emit(pingOnce())
+            // Периодический пинг для обновления статуса
             delay(5000)
         }
+    }.flowOn(Dispatchers.IO)
+
+    /** Разовая проверка (используется в репозитории перед записью на сервер). Не на Main. */
+    suspend fun isOnline(): Boolean =
+        withContext(Dispatchers.IO) { pingOnce() == ServerStatus.ONLINE }
+
+    private suspend fun pingOnce(): ServerStatus = try {
+        // Таймаут, чтобы недостижимый сервер не висел до дефолтного curl-таймаута.
+        val ok = withTimeoutOrNull(PING_TIMEOUT_MS) {
+            httpClient.get("$serverUrl/api/ping").status.value in 200..299
+        } == true
+        if (ok) ServerStatus.ONLINE else ServerStatus.OFFLINE
+    } catch (e: Exception) {
+        ServerStatus.OFFLINE
     }
 
-    suspend fun isOnline(): Boolean = try {
-        val response = httpClient.get("$serverUrl/api/ping")
-        response.status.value in 200..299
-    } catch (e: Exception) {
-        false
+    private companion object {
+        const val PING_TIMEOUT_MS = 3000L
     }
 }
