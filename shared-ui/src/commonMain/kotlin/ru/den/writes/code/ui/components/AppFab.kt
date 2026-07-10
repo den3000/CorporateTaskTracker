@@ -1,6 +1,7 @@
 package ru.den.writes.code.ui.components
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +39,8 @@ fun AppFab(
         ) {
             Icon(
                 painter = painterResource(Res.drawable.add_2_24px),
-                contentDescription = stringResource(Res.string.content_desc_add_task)
+                contentDescription = stringResource(Res.string.content_desc_add_task),
+                modifier = Modifier.size(24.dp)
             )
         }
     }

@@ -76,4 +76,12 @@ compose.resources {
     generateResClass = always
     // Пакет сгенерированного Res закреплён явно, чтобы не зависеть от имени модуля.
     packageOfResClass = "ru.den.writes.code.generated.resources"
+    // Под Аврору используем отдельный набор ресурсов: SVG-иконки (форк
+    // components-resources рендерит только SVG, не Android Vector Drawable).
+    // customDirectory ПОЛНОСТЬЮ заменяет конвенцию src/commonMain/composeResources,
+    // поэтому строки в наборе продублированы.
+    customDirectory(
+        sourceSetName = "commonMain",
+        directoryProvider = provider { layout.projectDirectory.dir("aurora-composeResources") },
+    )
 }

@@ -2,6 +2,7 @@ package ru.den.writes.code.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,7 +59,8 @@ fun AppTopBar(
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         painter = painterResource(Res.drawable.arrow_back_24px),
-                        contentDescription = stringResource(Res.string.content_desc_back)
+                        contentDescription = stringResource(Res.string.content_desc_back),
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -71,7 +73,8 @@ fun AppTopBar(
                     IconButton(onClick = { navController.navigate(SettingsRoute) }) {
                         Icon(
                             painter = painterResource(Res.drawable.settings_24px),
-                            contentDescription = stringResource(Res.string.content_desc_settings)
+                            contentDescription = stringResource(Res.string.content_desc_settings),
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
