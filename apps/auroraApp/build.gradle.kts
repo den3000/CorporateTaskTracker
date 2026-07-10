@@ -92,6 +92,10 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.ui)
 
+            // LocalViewModelStoreOwner / ViewModelStore для корневого owner в Main.kt.
+            // :shared-ui тянет его как implementation — наружу не виден.
+            implementation(libs.aurora.lifecycle.viewmodelCompose)
+
             implementation(libs.aurora.akPathInfo)
             implementation(libs.ktor.client.curl)
         }
