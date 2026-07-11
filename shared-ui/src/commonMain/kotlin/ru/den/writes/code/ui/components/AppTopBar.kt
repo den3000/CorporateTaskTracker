@@ -26,8 +26,8 @@ import ru.den.writes.code.generated.resources.settings_24px
 import ru.den.writes.code.generated.resources.title_settings
 import ru.den.writes.code.generated.resources.title_task_detail
 import ru.den.writes.code.generated.resources.title_tasks
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import ru.den.writes.code.res.painterResource
 import ru.den.writes.code.navigation.SettingsRoute
 import ru.den.writes.code.navigation.TaskDetailRoute
 import ru.den.writes.code.navigation.TaskListRoute

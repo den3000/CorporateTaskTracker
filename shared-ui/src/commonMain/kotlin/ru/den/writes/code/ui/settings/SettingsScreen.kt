@@ -27,9 +27,9 @@ import ru.den.writes.code.generated.resources.btn_click_me
 import ru.den.writes.code.generated.resources.btn_switch_dark
 import ru.den.writes.code.generated.resources.btn_switch_light
 import ru.den.writes.code.generated.resources.compose_multiplatform
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ru.den.writes.code.Greeting
+import ru.den.writes.code.res.painterResource
 import ru.den.writes.code.ui.theme.AppTheme
 
 @Composable

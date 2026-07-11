@@ -11,8 +11,8 @@ import androidx.compose.ui.unit.dp
 import ru.den.writes.code.generated.resources.Res
 import ru.den.writes.code.generated.resources.cloud_alert_24px
 import ru.den.writes.code.generated.resources.cloud_off_24px
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
+import ru.den.writes.code.res.painterResource
 import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.network.ServerStatus
 

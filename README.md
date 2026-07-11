@@ -26,8 +26,10 @@ Compose, переиспользуя код Android/iOS.
 - **Compose Preview** — стаб превью для Авроры (`shared-ui/src/previewStub`) — единственный
   оставшийся полифил (в форке нет `ui-tooling-preview` под linux).
 - **Koin, навигация, ресурсы — настоящие форк-либы 0.0.4** (раньше полифилы): Koin `4.2.0-aurora`,
-  `compose.navigation`, `components-resources`. Под Аврору ресурсы — отдельный SVG-набор
-  (`shared-ui/aurora-composeResources`), т.к. форк-загрузчик рендерит только SVG.
+  `compose.navigation`, `components-resources`. Иконки — те же Android Vector Drawable (XML), что и на
+  Android/iOS: форк-загрузчик рендерит только SVG, поэтому XML-вектор мы парсим сами в `ImageVector`
+  (drop-in `painterResource` в пакете `ru.den.writes.code.res` + `shared-ui/src/linuxMain/.../vectorxml`)
+  — синтаксис на местах вызова канонический, tint и размеры работают.
 - **Фокус, клавиатура, отступы, тема** — `PlatformModifier.linux.kt` и обработка высоты клавиатуры.
 
 **Modal Bottom Sheet** в коде виден только как нерабочий/обойдённый случай — он упирается в

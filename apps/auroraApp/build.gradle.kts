@@ -105,12 +105,13 @@ kotlin {
 compose.resources {
     // Res-класс генерирует :shared-ui, здесь только упаковка ресурсов.
     generateResClass = never
-    // Под Аврору берём набор с SVG-иконками из :shared-ui (плагин aurora-build
-    // пакует preparedResources ИМЕННО этого модуля, зависимости не видит).
+    // Плагин aurora-build пакует preparedResources ИМЕННО этого модуля (зависимости не
+    // видит), поэтому направляем на ресурсы :shared-ui (Android Vector Drawable — их
+    // рендерит appVectorPainter через собственный XML→ImageVector парсер).
     customDirectory(
         sourceSetName = "commonMain",
         directoryProvider = provider {
-            rootProject.layout.projectDirectory.dir("shared-ui/aurora-composeResources")
+            rootProject.layout.projectDirectory.dir("shared-ui/src/commonMain/composeResources")
         },
     )
 }

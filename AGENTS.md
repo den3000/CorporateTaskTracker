@@ -82,16 +82,26 @@ SSH to `AURORA_DEVICE_IP` (see `NETWORK_CONFIG_README.md`). Only compile-only is
 
 ## Critical invariants — do not break these
 
-1. **Aurora resources = a dedicated SVG set + `customDirectory` + an empty guard-catalog.** The fork
-   `components-resources` under Linux renders **SVG only** — an Android Vector Drawable
-   (`<vector android:pathData>`) hangs on a blank white screen (no crash). So Aurora uses a separate
-   resource set `shared-ui/aurora-composeResources/` (SVG icons + duplicated strings), wired via
-   `compose.resources { customDirectory("commonMain", …) }` in **both** `:shared-ui/build.aurora.gradle.kts`
-   (for the generated `Res` accessors) and `:auroraApp/build.gradle.kts` (the `aurora-build` plugin only
-   packages the resources of **its own** module). `customDirectory` fully **replaces** the
-   `src/commonMain/composeResources` convention. Additionally `:auroraApp/src/commonMain/composeResources`
-   must exist **empty** (created at configuration time via `…asFile.mkdirs()`) — **no `.gitkeep`**, because
-   a dotfile breaks `rpmbuild` (`resources/*` doesn't match dotfiles → "installed but unpackaged").
+1. **Aurora renders Android vector XML via our own parser; resources are packaged through
+   `customDirectory` + an empty guard-catalog.** The fork `components-resources` under Linux renders
+   **SVG only** — feeding `painterResource` an Android Vector Drawable (`<vector android:pathData>`)
+   hangs on a blank white screen (no crash). So Aurora keeps the **same XML drawables** as
+   Android/iOS but never lets the fork's loader touch a drawable. Common UI imports a **drop-in
+   `painterResource(DrawableResource)`** from the polyfill package `ru.den.writes.code.res` (so call
+   sites stay canonical — `painterResource(Res.drawable.some_icon)`, no path string). It's expect/actual:
+   Android/iOS delegate to the native `painterResource`; the **linux** actual resolves the drawable's
+   bytes via the public `getDrawableResourceBytes(env, resource)` and dispatches by **content signature**
+   (magic bytes, so no path/extension is needed): PNG/JPEG/WebP/BMP → `BitmapPainter` (raster), `<svg>` →
+   Skia SVGDOM painter, otherwise Android vector XML → an `ImageVector` via the vendored parser in
+   `shared-ui/src/linuxMain/.../vectorxml/` (`parse` + `toImageVector` + `ValueParser`, pure Kotlin,
+   device-proven since the 0.0.3 era). For vectors the result is an `ImageVector`, so `Icon(tint = …)`
+   and intrinsic dp sizes work normally (incl. dark theme); SVG colors are baked (tint doesn't apply,
+   same as the fork's own SVG painter).
+   **Packaging:** the `aurora-build` plugin only packages the resources of **its own** module,
+   so `:auroraApp/build.gradle.kts` sets `compose.resources.customDirectory("commonMain",
+   shared-ui/src/commonMain/composeResources)`. Additionally `:auroraApp/src/commonMain/composeResources`
+   must exist **empty** (created at configuration time via `…asFile.mkdirs()`) — **no `.gitkeep`**,
+   because a dotfile breaks `rpmbuild` (`resources/*` doesn't match dotfiles → "installed but unpackaged").
 2. **`:shared-ui` compiles with `-Xexplicit-backing-fields`** (uses `field =` in view models),
    which marks its metadata pre-release. Every module that consumes it (`:androidApp`, `:auroraApp`)
    must add `freeCompilerArgs += "-Xskip-prerelease-check"`.
@@ -99,11 +109,13 @@ SSH to `AURORA_DEVICE_IP` (see `NETWORK_CONFIG_README.md`). Only compile-only is
    the pbxproj embed refs depend on it. The pbxproj "Compile Kotlin Framework" phase runs
    `cd "$SRCROOT/../.."` (repo root) then `./gradlew :shared-ui:embedAndSignAppleFrameworkForXcode`.
    The iOS build only works with the upstream variant — the framework task doesn't exist under the fork.
-4. **Only one Aurora polyfill remains: `shared-ui/src/previewStub`** (a no-op `@Preview` annotation —
-   the fork ships `ui-tooling-preview` only for jvm/android). Everything else now uses **real fork
-   libraries**: Koin `4.2.0-aurora` (was the `koinCompat` source dir), `compose.navigation` DSL accessor
-   (was a reflection hack), and `components-resources` (was the `:compResAuroraCompat` module). Do not
-   reintroduce those polyfills.
+4. **Two small Aurora polyfills remain.** `shared-ui/src/previewStub` (a no-op `@Preview` annotation —
+   the fork ships `ui-tooling-preview` only for jvm/android), and `shared-ui/src/linuxMain/.../vectorxml`
+   (Android-vector-XML → `ImageVector` parser, because the fork's `components-resources` renders SVG
+   only — see invariant #1). Everything else now uses **real fork libraries**: Koin `4.2.0-aurora` (was
+   the `koinCompat` source dir), `compose.navigation` DSL accessor (was a reflection hack), and
+   `components-resources` (was the whole `:compResAuroraCompat` module — only its vector-XML parser was
+   kept). Do not reintroduce the dropped polyfills.
 5. **Room KSP stays entirely in `:shared-ui`** (the only module declaring android/ios/linux targets).
    App modules declare no targets and no KSP.
 
@@ -129,13 +141,13 @@ These only bite on Aurora (its Main dispatcher is stricter); Android/iOS are una
    navigation) → without it the app crashes with `No ViewModelStoreOwner`. `apps/auroraApp/.../Main.kt`
    wraps `App()` in `CompositionLocalProvider(LocalViewModelStoreOwner provides remember { … })`.
 
-4. **Aurora SVG icons: tint is baked, size must be explicit.** The fork's SVG painter **ignores**
-   `Icon(tint = …)` (color is baked into the SVG) and reports intrinsic size in **pixels** (Compose
-   divides by density → icons render half-size on a 2× screen). So the SVG icons in
-   `shared-ui/aurora-composeResources/drawable/` bake their colors, and every `Icon`/`painterResource`
-   drawable in common UI carries an explicit `Modifier.size(24.dp)`. Trade-off: icons don't adapt to
-   dark theme (colors are fixed for light). The settings logo (`Image`) is left unmanaged (slightly
-   smaller than on Android).
+4. **Import `painterResource` from `ru.den.writes.code.res`, not `org.jetbrains.compose.resources`.**
+   The two have the same signature, so call sites read canonically; the difference is the import. The
+   polyfill keeps Android/iOS on the native painter and routes Aurora through the vector-XML parser (see
+   invariant #1), so the fork's SVG-only loader never sees a drawable. The resulting `ImageVector`
+   honours `Icon(tint = …)` and intrinsic dp sizes (the `.size(24.dp)` modifiers on the icons are now
+   belt-and-suspenders, not load-bearing). On Aurora the read is async; a transparent 24dp placeholder
+   shows for ~1 frame while the vector loads.
 
 ## Entry points
 

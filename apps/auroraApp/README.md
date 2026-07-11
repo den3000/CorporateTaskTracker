@@ -31,9 +31,11 @@ plugin to the Aurora fork and applies the `aurora-build` / `aurora-devices` plug
 - The executable lives here, but the shared UI + `linuxArm64/X64` **library** targets (and Room KSP)
   live in `:shared-ui`.
 - **Resources:** the `aurora-build` plugin packages only **this** module's `composeResources`, so
-  `compose.resources.customDirectory("commonMain", …)` points at `:shared-ui`'s SVG resource set
-  (`shared-ui/aurora-composeResources`). The guard-catalog `src/commonMain/composeResources` is kept
-  **empty** (created at configuration time, no `.gitkeep`). See root `AGENTS.md`.
+  `compose.resources.customDirectory("commonMain", …)` points at `:shared-ui`'s
+  `src/commonMain/composeResources` (the same XML drawables as Android/iOS — rendered on Aurora by the
+  `ru.den.writes.code.res.painterResource` polyfill, since the fork loader handles SVG only). The guard-catalog
+  `src/commonMain/composeResources` is kept **empty** (created at configuration time, no `.gitkeep`).
+  See root `AGENTS.md`.
 - Provides a root `LocalViewModelStoreOwner` at the entry point — the desktop `application {}` gives
   none, and the real `koinViewModel()` requires it (else `No ViewModelStoreOwner`).
 - Adds `-Xskip-prerelease-check` to consume `:shared-ui`.

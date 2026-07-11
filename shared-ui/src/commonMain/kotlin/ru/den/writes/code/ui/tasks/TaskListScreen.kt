@@ -28,11 +28,11 @@ import ru.den.writes.code.generated.resources.Res
 import ru.den.writes.code.generated.resources.content_desc_back
 import ru.den.writes.code.generated.resources.empty_task_list
 import ru.den.writes.code.generated.resources.settings_24px
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
+import ru.den.writes.code.res.painterResource
 import ru.den.writes.code.ui.theme.AppTheme
 
 @Composable

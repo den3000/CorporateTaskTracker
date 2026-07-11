@@ -18,10 +18,14 @@ client platforms (Android, iOS, Aurora OS). Every app module depends on this one
   `ru.den.writes.code.generated.resources`.
 - `androidMain` / `iosMain` / `linuxMain` — platform `actual`s (`PlatformModifier.*`,
   `PlatformModule.*`, `Database.*`) and `iosMain/MainViewController.kt` (the framework entry).
-- `src/previewStub` — the only remaining Aurora polyfill (no-op `@Preview`), added to `commonMain`
-  in the Aurora variant. Koin, navigation and resources now use real fork libraries (see below).
-- `aurora-composeResources/` — Aurora-only SVG resource set (the fork loader renders SVG only);
-  wired via `compose.resources.customDirectory` in `build.aurora.gradle.kts`. See root `AGENTS.md`.
+- `src/previewStub` — Aurora polyfill (no-op `@Preview`), added to `commonMain` in the Aurora variant.
+- `res/PainterResource.*` + `src/linuxMain/.../vectorxml` — Aurora resources polyfill. Exposes a
+  drop-in `painterResource(DrawableResource)` (package `ru.den.writes.code.res`) so call sites stay
+  canonical: `painterResource(Res.drawable.icon)`. Android/iOS delegate to the native painter; Aurora
+  resolves the drawable bytes via `getDrawableResourceBytes` and dispatches by content signature —
+  raster (PNG/JPEG/WebP/BMP) → `BitmapPainter`, `<svg>` → Skia SVGDOM, otherwise Android vector XML →
+  `ImageVector`. Keeps XML icons with working `tint` + dp sizes. Koin and navigation now use real fork
+  libraries (see below).
 
 ## Notes
 
