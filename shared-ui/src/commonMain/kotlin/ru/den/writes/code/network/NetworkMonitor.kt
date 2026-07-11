@@ -12,7 +12,9 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 enum class ServerStatus {
-    CONNECTING, ONLINE, OFFLINE
+    CONNECTING,
+    ONLINE,
+    OFFLINE,
 }
 
 class NetworkMonitor(
@@ -31,8 +33,7 @@ class NetworkMonitor(
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun isOnline(): Boolean =
-        withContext(Dispatchers.IO) { pingOnce() == ServerStatus.ONLINE }
+    suspend fun isOnline(): Boolean = withContext(Dispatchers.IO) { pingOnce() == ServerStatus.ONLINE }
 
     private suspend fun pingOnce(): ServerStatus = try {
         val ok = withTimeoutOrNull(PING_TIMEOUT_MS) {

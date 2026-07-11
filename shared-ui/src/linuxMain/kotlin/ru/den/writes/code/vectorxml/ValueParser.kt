@@ -28,6 +28,7 @@ private const val ALPHA_MASK = 0xFF000000.toInt()
 
 // parseColorValue is copied from Android:
 // https://cs.android.com/android-studio/platform/tools/base/+/05fadd8cb2aaafb77da02048c7a240b2147ff293:sdk-common/src/main/java/com/android/ide/common/vectordrawable/VdUtil.kt;l=58
+
 /**
  * Parses a color value in #AARRGGBB format.
  *

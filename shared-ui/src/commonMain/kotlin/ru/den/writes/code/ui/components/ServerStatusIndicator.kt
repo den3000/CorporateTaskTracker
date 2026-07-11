@@ -8,28 +8,28 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.koin.compose.viewmodel.koinViewModel
+import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.generated.resources.Res
 import ru.den.writes.code.generated.resources.cloud_alert_24px
 import ru.den.writes.code.generated.resources.cloud_off_24px
-import org.koin.compose.viewmodel.koinViewModel
-import ru.den.writes.code.res.painterResource
-import ru.den.writes.code.ServerStatusViewModel
 import ru.den.writes.code.network.ServerStatus
+import ru.den.writes.code.res.painterResource
 
 @Composable
 fun ServerStatusIndicator(
     modifier: Modifier = Modifier,
-    viewModel: ServerStatusViewModel = koinViewModel()
+    viewModel: ServerStatusViewModel = koinViewModel(),
 ) {
     val status by viewModel.status.collectAsState()
-    
+
     when (status) {
         ServerStatus.CONNECTING -> {
             Icon(
                 painter = painterResource(Res.drawable.cloud_alert_24px),
                 contentDescription = "Подключение к серверу",
                 tint = MaterialTheme.colorScheme.secondary,
-                modifier = modifier.size(24.dp)
+                modifier = modifier.size(24.dp),
             )
         }
         ServerStatus.OFFLINE -> {
@@ -37,7 +37,7 @@ fun ServerStatusIndicator(
                 painter = painterResource(Res.drawable.cloud_off_24px),
                 contentDescription = "Нет соединения с сервером",
                 tint = MaterialTheme.colorScheme.error,
-                modifier = modifier.size(24.dp)
+                modifier = modifier.size(24.dp),
             )
         }
         ServerStatus.ONLINE -> {

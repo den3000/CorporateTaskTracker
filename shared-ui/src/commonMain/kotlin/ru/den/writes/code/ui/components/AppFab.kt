@@ -11,13 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import org.jetbrains.compose.resources.stringResource
 import ru.den.writes.code.generated.resources.Res
 import ru.den.writes.code.generated.resources.add_2_24px
 import ru.den.writes.code.generated.resources.content_desc_add_task
-import org.jetbrains.compose.resources.stringResource
-import ru.den.writes.code.res.painterResource
 import ru.den.writes.code.navigation.TaskDetailRoute
 import ru.den.writes.code.navigation.TaskListRoute
+import ru.den.writes.code.res.painterResource
 
 @Composable
 fun AppFab(
@@ -35,12 +35,12 @@ fun AppFab(
             modifier = Modifier
                 .padding(16.dp),
             containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ) {
             Icon(
                 painter = painterResource(Res.drawable.add_2_24px),
                 contentDescription = stringResource(Res.string.content_desc_add_task),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
         }
     }

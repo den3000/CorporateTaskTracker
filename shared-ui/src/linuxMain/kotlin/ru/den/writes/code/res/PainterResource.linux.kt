@@ -64,13 +64,12 @@ private sealed interface Decoded {
     data class Svg(val painter: Painter) : Decoded
 }
 
-private fun placeholderVector(): ImageVector =
-    ImageVector.Builder(
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f,
-    ).build()
+private fun placeholderVector(): ImageVector = ImageVector.Builder(
+    defaultWidth = 24.dp,
+    defaultHeight = 24.dp,
+    viewportWidth = 24f,
+    viewportHeight = 24f,
+).build()
 
 /** Picks the painter kind from the byte signature (no path/extension needed). */
 private fun decodeDrawable(bytes: ByteArray, density: Density): Decoded = when {

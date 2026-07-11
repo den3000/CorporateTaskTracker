@@ -151,19 +151,16 @@ private fun Element.parseGroup(builder: ImageVector.Builder, context: BuildConte
 
 private fun parseStringBrush(str: String) = SolidColor(Color(parseColorValue(str)))
 
-private fun Element.parseElementBrush(): Brush? =
-    childrenSequence
-        .filterIsInstance<Element>()
-        .find { it.nodeName == "gradient" }
-        ?.parseGradient()
+private fun Element.parseElementBrush(): Brush? = childrenSequence
+    .filterIsInstance<Element>()
+    .find { it.nodeName == "gradient" }
+    ?.parseGradient()
 
-private fun Element.parseGradient(): Brush? {
-    return when (attributeOrNull(ANDROID_NS, "type")) {
-        "linear" -> parseLinearGradient()
-        "radial" -> parseRadialGradient()
-        "sweep" -> parseSweepGradient()
-        else -> null
-    }
+private fun Element.parseGradient(): Brush? = when (attributeOrNull(ANDROID_NS, "type")) {
+    "linear" -> parseLinearGradient()
+    "radial" -> parseRadialGradient()
+    "sweep" -> parseSweepGradient()
+    else -> null
 }
 
 private fun Element.parseLinearGradient() = Brush.linearGradient(
@@ -260,7 +257,8 @@ private fun Element.apptAttr(
     return childrenSequence
         .filterIsInstance<Element>()
         .find {
-            it.namespaceURI == AAPT_NS && it.localName == "attr" &&
+            it.namespaceURI == AAPT_NS &&
+                it.localName == "attr" &&
                 it.getAttribute("name") == "$prefix:$name"
         }
 }

@@ -1,7 +1,7 @@
 package ru.den.writes.code.network
 
-import ru.den.writes.code.getPlatform
 import ru.den.writes.code.config.AppConfig
+import ru.den.writes.code.getPlatform
 
 class BaseUrlProvider {
     // В зависимости от платформы используем нужный адрес для эмулятора/симулятора

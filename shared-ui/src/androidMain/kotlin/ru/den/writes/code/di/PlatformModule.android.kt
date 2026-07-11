@@ -8,4 +8,3 @@ actual fun platformModule() = module {
         getDatabaseBuilder(get())
     }
 }
-

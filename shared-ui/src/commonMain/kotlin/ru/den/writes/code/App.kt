@@ -27,7 +27,7 @@ expect fun Modifier.fillMaxSizeModifierWithKbdHandling(): Modifier
 @Composable
 @Preview
 fun App(
-    koinConfig: KoinAppDeclaration.() -> Unit = {}
+    koinConfig: KoinAppDeclaration.() -> Unit = {},
 ) {
     KoinApplication(application = {
         modules(
@@ -46,18 +46,18 @@ fun App(
 
             Scaffold(
                 topBar = { AppTopBar(navController) },
-                floatingActionButton = { AppFab(navController) }
+                floatingActionButton = { AppFab(navController) },
             ) { paddingValues ->
                 Box(
                     modifier = Modifier
                         .fillMaxSizeModifierWithKbdHandling()
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(paddingValues)
+                        .padding(paddingValues),
                 ) {
                     AppNavigation(
                         navController = navController,
                         settingsViewModel = settingsViewModel,
-                        isDarkTheme = useDarkTheme
+                        isDarkTheme = useDarkTheme,
                     )
                 }
             }

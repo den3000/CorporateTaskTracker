@@ -7,5 +7,4 @@ import org.jetbrains.compose.resources.painterResource as composePainterResource
 
 // iOS (skiko) parses Android vector XML natively — delegate to the standard painter.
 @Composable
-actual fun painterResource(resource: DrawableResource): Painter =
-    composePainterResource(resource)
+actual fun painterResource(resource: DrawableResource): Painter = composePainterResource(resource)

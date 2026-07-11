@@ -22,13 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import ru.den.writes.code.Greeting
 import ru.den.writes.code.generated.resources.Res
 import ru.den.writes.code.generated.resources.btn_click_me
 import ru.den.writes.code.generated.resources.btn_switch_dark
 import ru.den.writes.code.generated.resources.btn_switch_light
 import ru.den.writes.code.generated.resources.compose_multiplatform
-import org.jetbrains.compose.resources.stringResource
-import ru.den.writes.code.Greeting
 import ru.den.writes.code.res.painterResource
 import ru.den.writes.code.ui.theme.AppTheme
 
@@ -43,7 +43,7 @@ fun SettingsScreen(
         isDarkTheme = isDarkTheme,
         showContent = showContent,
         onToggleTheme = { viewModel.toggleTheme(isDarkTheme) },
-        onToggleContent = viewModel::toggleContent
+        onToggleContent = viewModel::toggleContent,
     )
 }
 
@@ -52,7 +52,7 @@ fun SettingsContent(
     isDarkTheme: Boolean,
     showContent: Boolean,
     onToggleTheme: (Boolean) -> Unit = {},
-    onToggleContent: () -> Unit = {}
+    onToggleContent: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -60,18 +60,21 @@ fun SettingsContent(
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Button(
             onClick = { onToggleTheme(isDarkTheme) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
-            )
+                contentColor = MaterialTheme.colorScheme.onSecondary,
+            ),
         ) {
             Text(
-                if (isDarkTheme) stringResource(Res.string.btn_switch_light)
-                else stringResource(Res.string.btn_switch_dark)
+                if (isDarkTheme) {
+                    stringResource(Res.string.btn_switch_light)
+                } else {
+                    stringResource(Res.string.btn_switch_dark)
+                },
             )
         }
 
@@ -90,7 +93,7 @@ fun SettingsContent(
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colorScheme.surface,
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
                     )
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -100,7 +103,7 @@ fun SettingsContent(
                 Text(
                     text = "Compose: $greeting",
                     color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             }
         }
@@ -113,7 +116,7 @@ fun SettingsContentPreviewLight() {
     AppTheme {
         SettingsContent(
             isDarkTheme = false,
-            showContent = false
+            showContent = false,
         )
     }
 }
@@ -124,7 +127,7 @@ fun SettingsContentPreviewDark() {
     AppTheme(true) {
         SettingsContent(
             isDarkTheme = true,
-            showContent = false
+            showContent = false,
         )
     }
 }

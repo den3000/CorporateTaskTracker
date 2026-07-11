@@ -1,15 +1,10 @@
 package ru.den.writes.code.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import ru.den.writes.code.data.local.toDomain
-import ru.den.writes.code.data.local.toEntity
 import ru.den.writes.code.data.remote.RemoteTasksDataSource
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.network.NetworkMonitor
-import ru.den.writes.code.ui.tasks.TaskItem
 
 /**
  * Основной репозиторий данных, объединяющий локальные и удалённые источники.
@@ -24,14 +19,11 @@ class TasksRepository(
      * Подписываемся на поток задач.
      * Сначала загружаем локальные данные, затем синхронизируем с сервером (если есть сеть).
      */
-    fun subscribeAllTasks(): Flow<List<Task>> {
-
-        return combine(
-            localDataSource.subscribeAllTasks(),
-            remoteDataSource.tasks
-        ) { localTasks, remoteTasks ->
-            syncWithServer(localTasks, remoteTasks)
-        }
+    fun subscribeAllTasks(): Flow<List<Task>> = combine(
+        localDataSource.subscribeAllTasks(),
+        remoteDataSource.tasks,
+    ) { localTasks, remoteTasks ->
+        syncWithServer(localTasks, remoteTasks)
     }
 
     /**
@@ -61,7 +53,7 @@ class TasksRepository(
                 println("PAM TASKS REPOSITORY > deleteTask exception: $e")
             }
         }
-        
+
         // Удаляем из локальной БД
         localDataSource.deleteTask(task)
     }
@@ -69,9 +61,7 @@ class TasksRepository(
     /**
      * Получаем задачу по ID.
      */
-    suspend fun getTaskById(id: Int): Task? {
-        return localDataSource.getTaskById(id)
-    }
+    suspend fun getTaskById(id: Int): Task? = localDataSource.getTaskById(id)
 
     suspend fun forceSync() {
         remoteDataSource.updateTasks()
@@ -85,7 +75,7 @@ class TasksRepository(
      */
     private fun syncWithServer(
         localTasks: List<Task>,
-        remoteTasks: List<Task>
+        remoteTasks: List<Task>,
     ): List<Task> {
         // Преобразуем удалённые задачи в Map по ID для быстрого поиска
         val remoteTasksMap = remoteTasks.associateBy { it.id }

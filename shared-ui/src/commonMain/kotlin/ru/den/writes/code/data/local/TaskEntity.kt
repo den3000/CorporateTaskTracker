@@ -12,7 +12,7 @@ data class TaskEntity(
     val title: String,
     val description: String,
     val isCompleted: Boolean,
-    val priority: TaskPriority
+    val priority: TaskPriority,
 )
 
 fun TaskEntity.toDomain(): Task = Task(
@@ -20,7 +20,7 @@ fun TaskEntity.toDomain(): Task = Task(
     title = title,
     description = description,
     isCompleted = isCompleted,
-    priority = priority
+    priority = priority,
 )
 
 fun Task.toEntity(): TaskEntity = TaskEntity(
@@ -28,5 +28,5 @@ fun Task.toEntity(): TaskEntity = TaskEntity(
     title = title,
     description = description,
     isCompleted = isCompleted,
-    priority = priority
+    priority = priority,
 )

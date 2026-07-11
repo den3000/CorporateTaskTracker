@@ -18,7 +18,7 @@ fun HandleStatusBarOffset(content: @Composable (() -> Unit)) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 48.dp)
+            .padding(top = 48.dp),
     ) {
         content()
     }
@@ -34,7 +34,7 @@ fun main() = application {
             object : ViewModelStoreOwner {
                 override val viewModelStore = ViewModelStore()
             }
-        }
+        },
     ) {
         HandleStatusBarOffset {
             App()

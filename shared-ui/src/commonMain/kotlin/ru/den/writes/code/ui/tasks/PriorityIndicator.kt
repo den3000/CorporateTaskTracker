@@ -7,9 +7,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.den.writes.code.domain.model.TaskPriority
-import androidx.compose.ui.tooling.preview.Preview
 import ru.den.writes.code.ui.theme.AppTheme
 
 @Composable
@@ -23,7 +23,7 @@ fun PriorityIndicator(priority: TaskPriority) {
     Box(
         modifier = Modifier
             .size(12.dp)
-            .background(color, shape = CircleShape)
+            .background(color, shape = CircleShape),
     )
 }
 

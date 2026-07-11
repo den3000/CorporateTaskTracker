@@ -13,25 +13,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import ru.den.writes.code.domain.model.TaskPriority
 import ru.den.writes.code.generated.resources.Res
 import ru.den.writes.code.generated.resources.priority_high
 import ru.den.writes.code.generated.resources.priority_low
 import ru.den.writes.code.generated.resources.priority_medium
-import org.jetbrains.compose.resources.stringResource
-import ru.den.writes.code.domain.model.TaskPriority
 
 @Composable
 fun PriorityBadge(
     priority: TaskPriority,
     modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     val backgroundColor = when (priority) {
         TaskPriority.HIGH -> MaterialTheme.colorScheme.error
         TaskPriority.MEDIUM -> MaterialTheme.colorScheme.primaryContainer
         TaskPriority.LOW -> MaterialTheme.colorScheme.secondary
     }
-    
+
     val textColor = contentColorFor(backgroundColor)
 
     val label = when (priority) {
@@ -50,12 +50,12 @@ fun PriorityBadge(
 
     Box(
         modifier = boxModifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = textColor
+            color = textColor,
         )
     }
 }

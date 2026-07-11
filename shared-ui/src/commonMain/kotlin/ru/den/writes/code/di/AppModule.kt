@@ -32,7 +32,7 @@ val appModule = module {
     // ViewModels
     viewModelOf(::ServerStatusViewModel)
     viewModelOf(::SettingsViewModel)
-    
+
     factory { TaskListViewModel(get()) }
     factory { (taskId: Int) -> TaskDetailViewModel(taskId, get()) }
 }
