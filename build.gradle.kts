@@ -18,7 +18,6 @@ spotless {
     kotlin {
         target("**/*.kt")
         targetExclude("**build**")
-        licenseHeaderFile("$rootDir/copyright")
         ktlint("1.6.0").editorConfigOverride(
             mapOf(
                 "ktlint_standard_no-wildcard-imports" to "disabled",
