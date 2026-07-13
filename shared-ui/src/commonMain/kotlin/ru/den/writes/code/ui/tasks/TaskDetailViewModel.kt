@@ -11,7 +11,7 @@ import ru.den.writes.code.domain.model.TaskPriority
 
 class TaskDetailViewModel(
     val taskId: Int,
-    private val repository: TasksRepository
+    private val repository: TasksRepository,
 ) : ViewModel() {
 
     val taskTitle: StateFlow<String>
@@ -62,7 +62,7 @@ class TaskDetailViewModel(
             title = taskTitle.value,
             description = taskDescription.value,
             isCompleted = isCompleted.value,
-            priority = taskPriority.value
+            priority = taskPriority.value,
         )
         repository.upsertTask(task)
     }

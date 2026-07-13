@@ -12,15 +12,13 @@ import ru.den.writes.code.domain.model.Task
  * Отвечает за CRUD операции с локальным хранилищем.
  */
 class LocalTasksDataSource(
-    private val taskDao: TaskDao
+    private val taskDao: TaskDao,
 ) {
-    fun subscribeAllTasks(): Flow<List<Task>> {
-        return taskDao
-            .subscribeAllTasks()
-            .map { entities ->
-                entities.map { it.toDomain() }
-            }
-    }
+    fun subscribeAllTasks(): Flow<List<Task>> = taskDao
+        .subscribeAllTasks()
+        .map { entities ->
+            entities.map { it.toDomain() }
+        }
 
     suspend fun upsertTask(task: Task) {
         taskDao.upsertTask(task.toEntity())
@@ -30,7 +28,5 @@ class LocalTasksDataSource(
         taskDao.deleteTask(task.toEntity())
     }
 
-    suspend fun getTaskById(id: Int): Task? {
-        return taskDao.getTaskById(id)?.toDomain()
-    }
+    suspend fun getTaskById(id: Int): Task? = taskDao.getTaskById(id)?.toDomain()
 }

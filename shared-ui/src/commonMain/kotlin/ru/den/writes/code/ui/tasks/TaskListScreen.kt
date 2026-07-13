@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
@@ -23,21 +24,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.den.writes.code.generated.resources.Res
-import ru.den.writes.code.generated.resources.content_desc_back
-import ru.den.writes.code.generated.resources.empty_task_list
-import ru.den.writes.code.generated.resources.settings_24px
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
+import ru.den.writes.code.generated.resources.Res
+import ru.den.writes.code.generated.resources.content_desc_back
+import ru.den.writes.code.generated.resources.empty_task_list
+import ru.den.writes.code.generated.resources.settings_24px
+import ru.den.writes.code.res.painterResource
 import ru.den.writes.code.ui.theme.AppTheme
 
 @Composable
 fun TaskListScreen(
     viewModel: TaskListViewModel = koinViewModel(),
-    onNavigateToTask: (Int) -> Unit
+    onNavigateToTask: (Int) -> Unit,
 ) {
     val tasks by viewModel.tasks.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -59,17 +60,17 @@ fun TaskListContent(
     onNavigateToTask: (Int) -> Unit,
     onDeleteTask: (Task) -> Unit,
     isRefreshing: Boolean,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
 ) {
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             if (tasks.isEmpty()) {
                 item { EmptyStateItem() }
@@ -78,13 +79,13 @@ fun TaskListContent(
 
             items(
                 items = tasks,
-                key = { it.id }
+                key = { it.id },
             ) { task ->
                 DismissibleTaskItem(
                     task = task,
                     onToggleCompletion = onToggleCompletion,
                     onNavigateToTask = onNavigateToTask,
-                    onDeleteTask = onDeleteTask
+                    onDeleteTask = onDeleteTask,
                 )
             }
         }
@@ -98,12 +99,12 @@ fun TaskListContent(
 private fun LazyItemScope.EmptyStateItem() {
     Box(
         modifier = Modifier.fillParentMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = stringResource(Res.string.empty_task_list),
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -134,25 +135,25 @@ private fun DismissibleTaskItem(
                     .fillMaxSize()
                     .background(color)
                     .padding(horizontal = 20.dp),
-                contentAlignment = Alignment.CenterEnd
+                contentAlignment = Alignment.CenterEnd,
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.settings_24px),
                     contentDescription = stringResource(Res.string.content_desc_back),
-                    tint = MaterialTheme.colorScheme.error
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(24.dp),
                 )
             }
         },
-        onDismiss = { onDeleteTask(task) }
+        onDismiss = { onDeleteTask(task) },
     ) {
         TaskItem(
             task = task,
             onToggleCompletion = { onToggleCompletion(task.id) },
-            onClick = { onNavigateToTask(task.id) }
+            onClick = { onNavigateToTask(task.id) },
         )
     }
 }
-
 
 @Preview
 @Composable
@@ -160,7 +161,7 @@ fun TaskListScreenPreview() {
     val sampleTasks = listOf(
         Task(1, "Выполнить тестовое задание", "Нужно сделать все по ТЗ", false, TaskPriority.HIGH),
         Task(2, "Купить продукты", "Хлеб, молоко, яйца", true, TaskPriority.MEDIUM),
-        Task(3, "Прочитать книгу", "Чистый код", false, TaskPriority.LOW)
+        Task(3, "Прочитать книгу", "Чистый код", false, TaskPriority.LOW),
     )
     AppTheme {
         TaskListContent(
@@ -180,7 +181,7 @@ fun TaskListScreenPreviewDark() {
     val sampleTasks = listOf(
         Task(1, "Выполнить тестовое задание", "Нужно сделать все по ТЗ", false, TaskPriority.HIGH),
         Task(2, "Купить продукты", "Хлеб, молоко, яйца", true, TaskPriority.MEDIUM),
-        Task(3, "Прочитать книгу", "Чистый код", false, TaskPriority.LOW)
+        Task(3, "Прочитать книгу", "Чистый код", false, TaskPriority.LOW),
     )
     AppTheme(true) {
         TaskListContent(

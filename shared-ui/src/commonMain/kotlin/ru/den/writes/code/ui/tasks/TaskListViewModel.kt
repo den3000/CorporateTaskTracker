@@ -12,7 +12,7 @@ import ru.den.writes.code.data.repository.TasksRepository
 import ru.den.writes.code.domain.model.Task
 
 class TaskListViewModel(
-    private val repository: TasksRepository
+    private val repository: TasksRepository,
 ) : ViewModel() {
 
     val isRefreshing: StateFlow<Boolean>
@@ -42,5 +42,4 @@ class TaskListViewModel(
     fun deleteTask(task: Task) = viewModelScope.launch {
         repository.deleteTask(task)
     }
-
 }

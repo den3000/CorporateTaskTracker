@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ru.den.writes.code.domain.model.Task
 import ru.den.writes.code.domain.model.TaskPriority
 import ru.den.writes.code.ui.theme.AppTheme
@@ -29,7 +29,7 @@ import ru.den.writes.code.ui.theme.AppTheme
 fun TaskItem(
     task: Task,
     onToggleCompletion: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(
         modifier = Modifier.Companion
@@ -37,19 +37,19 @@ fun TaskItem(
             .clip(MaterialTheme.shapes.medium)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
     ) {
         Row(
             modifier = Modifier.Companion
                 .fillMaxWidth()
                 .padding(12.dp),
-            verticalAlignment = Alignment.Companion.CenterVertically
+            verticalAlignment = Alignment.Companion.CenterVertically,
         ) {
             // Чекбокс
             Checkbox(
                 checked = task.isCompleted,
-                onCheckedChange = { onToggleCompletion() }
+                onCheckedChange = { onToggleCompletion() },
             )
 
             Spacer(modifier = Modifier.Companion.width(8.dp))
@@ -62,7 +62,7 @@ fun TaskItem(
                     color = MaterialTheme.colorScheme.onSurface,
                     textDecoration = if (task.isCompleted) TextDecoration.Companion.LineThrough else TextDecoration.Companion.None,
                     maxLines = 1,
-                    overflow = TextOverflow.Companion.Ellipsis
+                    overflow = TextOverflow.Companion.Ellipsis,
                 )
 
                 if (task.description.isNotBlank()) {
@@ -72,7 +72,7 @@ fun TaskItem(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
-                        overflow = TextOverflow.Companion.Ellipsis
+                        overflow = TextOverflow.Companion.Ellipsis,
                     )
                 }
             }
@@ -95,10 +95,10 @@ fun TaskItemPreview() {
                 title = "Выполнить тестовое задание",
                 description = "Нужно сделать все по ТЗ до конца недели",
                 isCompleted = false,
-                priority = TaskPriority.HIGH
+                priority = TaskPriority.HIGH,
             ),
             onToggleCompletion = {},
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -113,10 +113,10 @@ fun TaskItemCompletedPreview() {
                 title = "Купить продукты",
                 description = "Хлеб, молоко, яйца",
                 isCompleted = true,
-                priority = TaskPriority.MEDIUM
+                priority = TaskPriority.MEDIUM,
             ),
             onToggleCompletion = {},
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -131,10 +131,10 @@ fun TaskItemPreviewDark() {
                 title = "Выполнить тестовое задание",
                 description = "Нужно сделать все по ТЗ до конца недели",
                 isCompleted = false,
-                priority = TaskPriority.HIGH
+                priority = TaskPriority.HIGH,
             ),
             onToggleCompletion = {},
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -149,10 +149,10 @@ fun TaskItemCompletedPreviewDark() {
                 title = "Купить продукты",
                 description = "Хлеб, молоко, яйца",
                 isCompleted = true,
-                priority = TaskPriority.MEDIUM
+                priority = TaskPriority.MEDIUM,
             ),
             onToggleCompletion = {},
-            onClick = {}
+            onClick = {},
         )
     }
 }

@@ -27,12 +27,16 @@ pluginManagement {
     }
 
     plugins {
-        val composeVersion = if (providers.gradleProperty("compose.aurora.enabled").orNull == "true") {
-            providers.gradleProperty("compose.version.aurora").get()
+        // Вариант сборки выбирается свойством `buildVariant` (-PbuildVariant=aurora).
+        // Aurora тянет форк Compose 0.0.4-aurora и плагины сборки/деплоя под Аврору;
+        // upstream — обычный Compose Multiplatform.
+        if (providers.gradleProperty("buildVariant").orNull == "aurora") {
+            id("org.jetbrains.compose").version("0.0.4-aurora") apply false
+            id("ru.auroraos.kmp.aurora-build").version("0.0.1") apply false
+            id("ru.auroraos.kmp.aurora-devices").version("0.0.1") apply false
         } else {
-            providers.gradleProperty("compose.version.upstream").get()
+            id("org.jetbrains.compose").version("1.10.2") apply false
         }
-        id("org.jetbrains.compose").version(composeVersion) apply false
     }
 }
 plugins {
@@ -63,14 +67,18 @@ dependencyResolutionManagement {
     }
 }
 
+val auroraOn = providers.gradleProperty("buildVariant").orNull == "aurora"
+
 include(":shared-ui")
 include(":server")
 include(":shared")
-include(":compResAuroraCompat")
+
+// :shared-ui собирается по двум разным build-файлам:
+// upstream — build.gradle.kts (Android/iOS), Aurora — build.aurora.gradle.kts (linux).
+project(":shared-ui").buildFileName = if (auroraOn) "build.aurora.gradle.kts" else "build.gradle.kts"
 
 // Приложения-таргеты подключаются по варианту сборки:
 // upstream (Android/iOS) — :androidApp; Aurora — :auroraApp.
-val auroraOn = providers.gradleProperty("compose.aurora.enabled").orNull == "true"
 if (auroraOn) {
     include(":auroraApp")
     project(":auroraApp").projectDir = file("apps/auroraApp")

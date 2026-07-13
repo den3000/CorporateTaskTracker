@@ -34,6 +34,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import ru.den.writes.code.domain.model.TaskPriority
 import ru.den.writes.code.generated.resources.Res
 import ru.den.writes.code.generated.resources.btn_create
 import ru.den.writes.code.generated.resources.btn_save_changes
@@ -47,15 +50,12 @@ import ru.den.writes.code.generated.resources.priority_medium
 import ru.den.writes.code.generated.resources.select_priority
 import ru.den.writes.code.generated.resources.title_edit_task
 import ru.den.writes.code.generated.resources.title_new_task
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.stringResource
-import ru.den.writes.code.domain.model.TaskPriority
 import ru.den.writes.code.ui.theme.AppTheme
 
 @Composable
 fun TaskDetailScreen(
     viewModel: TaskDetailViewModel,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val title by viewModel.taskTitle.collectAsState()
@@ -78,7 +78,7 @@ fun TaskDetailScreen(
                 viewModel.saveTask()
                 onBack()
             }
-        }
+        },
     )
 }
 
@@ -118,17 +118,17 @@ fun TaskDetailContent(
                     focusManager.clearFocus()
                 })
             }
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .verticalScroll(scrollState)
+                .verticalScroll(scrollState),
         ) {
             Text(
                 text = screenTitle,
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -139,7 +139,7 @@ fun TaskDetailContent(
                 onValueChange = onTitleChange,
                 label = { Text(stringResource(Res.string.label_task_name)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -150,7 +150,7 @@ fun TaskDetailContent(
                 onValueChange = onDescriptionChange,
                 label = { Text(stringResource(Res.string.label_task_description)) },
                 minLines = 4,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -158,16 +158,16 @@ fun TaskDetailContent(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = stringResource(Res.string.label_task_completed),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
                 Switch(
                     checked = isCompleted,
-                    onCheckedChange = onCompletionChange
+                    onCheckedChange = onCompletionChange,
                 )
             }
 
@@ -176,19 +176,19 @@ fun TaskDetailContent(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = stringResource(Res.string.label_priority),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
                 PriorityBadge(
                     priority = priority,
                     onClick = {
                         focusManager.clearFocus()
                         showBottomSheet = true
-                    }
+                    },
                 )
             }
 
@@ -204,11 +204,14 @@ fun TaskDetailContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            enabled = title.isNotBlank() // Нельзя сохранить задачу без названия
+            enabled = title.isNotBlank(), // Нельзя сохранить задачу без названия
         ) {
             Text(
-                if (isNewTask) stringResource(Res.string.btn_create)
-                else stringResource(Res.string.btn_save_changes)
+                if (isNewTask) {
+                    stringResource(Res.string.btn_create)
+                } else {
+                    stringResource(Res.string.btn_save_changes)
+                },
             )
         }
     }
@@ -216,20 +219,20 @@ fun TaskDetailContent(
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
-            sheetState = sheetState
+            sheetState = sheetState,
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp, top = 8.dp)
+                    .padding(bottom = 32.dp, top = 8.dp),
             ) {
                 Text(
                     text = stringResource(Res.string.select_priority),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
-                
+
                 TaskPriority.entries.forEach { p ->
                     Row(
                         modifier = Modifier
@@ -244,7 +247,7 @@ fun TaskDetailContent(
                             }
                             .padding(horizontal = 16.dp, vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         val label = when (p) {
                             TaskPriority.HIGH -> stringResource(Res.string.priority_high)
@@ -254,7 +257,7 @@ fun TaskDetailContent(
                         Text(
                             text = label,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         PriorityIndicator(priority = p)
                     }
@@ -278,7 +281,7 @@ fun TaskDetailScreenPreview() {
             onDescriptionChange = {},
             onCompletionChange = {},
             onPriorityChange = {},
-            onSave = {}
+            onSave = {},
         )
     }
 }
@@ -297,7 +300,7 @@ fun NewTaskDetailScreenPreview() {
             onDescriptionChange = {},
             onCompletionChange = {},
             onPriorityChange = {},
-            onSave = {}
+            onSave = {},
         )
     }
 }

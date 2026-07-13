@@ -9,13 +9,13 @@ import ru.den.writes.code.network.NetworkMonitor
 import ru.den.writes.code.network.ServerStatus
 
 class ServerStatusViewModel(
-    networkMonitor: NetworkMonitor
+    networkMonitor: NetworkMonitor,
 ) : ViewModel() {
 
     val status: StateFlow<ServerStatus> = networkMonitor.observeStatus()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = ServerStatus.CONNECTING
+            initialValue = ServerStatus.CONNECTING,
         )
 }

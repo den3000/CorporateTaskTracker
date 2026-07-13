@@ -2,6 +2,7 @@ package ru.den.writes.code.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import org.jetbrains.compose.resources.stringResource
 import ru.den.writes.code.generated.resources.Res
 import ru.den.writes.code.generated.resources.app_name
 import ru.den.writes.code.generated.resources.arrow_back_24px
@@ -25,11 +27,10 @@ import ru.den.writes.code.generated.resources.settings_24px
 import ru.den.writes.code.generated.resources.title_settings
 import ru.den.writes.code.generated.resources.title_task_detail
 import ru.den.writes.code.generated.resources.title_tasks
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import ru.den.writes.code.navigation.SettingsRoute
 import ru.den.writes.code.navigation.TaskDetailRoute
 import ru.den.writes.code.navigation.TaskListRoute
+import ru.den.writes.code.res.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +59,8 @@ fun AppTopBar(
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         painter = painterResource(Res.drawable.arrow_back_24px),
-                        contentDescription = stringResource(Res.string.content_desc_back)
+                        contentDescription = stringResource(Res.string.content_desc_back),
+                        modifier = Modifier.size(24.dp),
                     )
                 }
             }
@@ -71,7 +73,8 @@ fun AppTopBar(
                     IconButton(onClick = { navController.navigate(SettingsRoute) }) {
                         Icon(
                             painter = painterResource(Res.drawable.settings_24px),
-                            contentDescription = stringResource(Res.string.content_desc_settings)
+                            contentDescription = stringResource(Res.string.content_desc_settings),
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
@@ -81,7 +84,7 @@ fun AppTopBar(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        ),
     )
 }

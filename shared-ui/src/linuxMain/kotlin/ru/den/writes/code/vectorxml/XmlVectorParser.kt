@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jetbrains.compose.resources.vector
+package ru.den.writes.code.vectorxml
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -35,10 +35,7 @@ import androidx.compose.ui.graphics.vector.EmptyPath
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.compose.ui.unit.Density
-import org.jetbrains.compose.resources.vector.BuildContext.Group
-import org.jetbrains.compose.resources.vector.xmldom.Element
-import org.jetbrains.compose.resources.vector.xmldom.Node
-
+import ru.den.writes.code.vectorxml.BuildContext.Group
 
 //  Parsing logic is the same as in Android implementation
 //  (compose/ui/ui/src/androidMain/kotlin/androidx/compose/ui/graphics/vector/compat/XmlVectorParser.kt)
@@ -65,7 +62,7 @@ private class BuildContext {
          * Group that doesn't exist in xml file. We add it manually when we see <clip-path> node.
          * It will be automatically popped when the real group will be popped.
          */
-        Virtual
+        Virtual,
     }
 }
 
@@ -76,7 +73,7 @@ internal fun Element.toImageVector(density: Density): ImageVector {
         defaultHeight = attributeOrNull(ANDROID_NS, "height").parseDp(density),
         viewportWidth = attributeOrNull(ANDROID_NS, "viewportWidth")?.toFloat() ?: 0f,
         viewportHeight = attributeOrNull(ANDROID_NS, "viewportHeight")?.toFloat() ?: 0f,
-        autoMirror = attributeOrNull(ANDROID_NS, "autoMirrored") == "true"
+        autoMirror = attributeOrNull(ANDROID_NS, "autoMirrored") == "true",
     )
     parseVectorNodes(builder, context)
     return builder.build()
@@ -118,14 +115,14 @@ private fun Element.parsePath(builder: ImageVector.Builder) {
         strokeLineMiter = attributeOrNull(ANDROID_NS, "strokeMiterLimit")?.toFloat() ?: 1.0f,
         trimPathStart = attributeOrNull(ANDROID_NS, "trimPathStart")?.toFloat() ?: 0.0f,
         trimPathEnd = attributeOrNull(ANDROID_NS, "trimPathEnd")?.toFloat() ?: 1.0f,
-        trimPathOffset = attributeOrNull(ANDROID_NS, "trimPathOffset")?.toFloat() ?: 0.0f
+        trimPathOffset = attributeOrNull(ANDROID_NS, "trimPathOffset")?.toFloat() ?: 0.0f,
     )
 }
 
 private fun Element.parseClipPath(builder: ImageVector.Builder, context: BuildContext) {
     builder.addGroup(
         name = attributeOrNull(ANDROID_NS, "name") ?: "",
-        clipPathData = addPathNodes(attributeOrNull(ANDROID_NS, "pathData"))
+        clipPathData = addPathNodes(attributeOrNull(ANDROID_NS, "pathData")),
     )
     context.currentGroups.add(Group.Virtual)
 }
@@ -140,7 +137,7 @@ private fun Element.parseGroup(builder: ImageVector.Builder, context: BuildConte
         attributeOrNull(ANDROID_NS, "scaleY")?.toFloat() ?: DefaultScaleY,
         attributeOrNull(ANDROID_NS, "translateX")?.toFloat() ?: DefaultTranslationX,
         attributeOrNull(ANDROID_NS, "translateY")?.toFloat() ?: DefaultTranslationY,
-        EmptyPath
+        EmptyPath,
     )
     context.currentGroups.add(Group.Real)
 
@@ -154,42 +151,39 @@ private fun Element.parseGroup(builder: ImageVector.Builder, context: BuildConte
 
 private fun parseStringBrush(str: String) = SolidColor(Color(parseColorValue(str)))
 
-private fun Element.parseElementBrush(): Brush? =
-    childrenSequence
-        .filterIsInstance<Element>()
-        .find { it.nodeName == "gradient" }
-        ?.parseGradient()
+private fun Element.parseElementBrush(): Brush? = childrenSequence
+    .filterIsInstance<Element>()
+    .find { it.nodeName == "gradient" }
+    ?.parseGradient()
 
-private fun Element.parseGradient(): Brush? {
-    return when (attributeOrNull(ANDROID_NS, "type")) {
-        "linear" -> parseLinearGradient()
-        "radial" -> parseRadialGradient()
-        "sweep" -> parseSweepGradient()
-        else -> null
-    }
+private fun Element.parseGradient(): Brush? = when (attributeOrNull(ANDROID_NS, "type")) {
+    "linear" -> parseLinearGradient()
+    "radial" -> parseRadialGradient()
+    "sweep" -> parseSweepGradient()
+    else -> null
 }
 
 private fun Element.parseLinearGradient() = Brush.linearGradient(
     colorStops = parseColorStops(),
     start = Offset(
         attributeOrNull(ANDROID_NS, "startX")?.toFloat() ?: 0f,
-        attributeOrNull(ANDROID_NS, "startY")?.toFloat() ?: 0f
+        attributeOrNull(ANDROID_NS, "startY")?.toFloat() ?: 0f,
     ),
     end = Offset(
         attributeOrNull(ANDROID_NS, "endX")?.toFloat() ?: 0f,
-        attributeOrNull(ANDROID_NS, "endY")?.toFloat() ?: 0f
+        attributeOrNull(ANDROID_NS, "endY")?.toFloat() ?: 0f,
     ),
-    tileMode = attributeOrNull(ANDROID_NS, "tileMode")?.let(::parseTileMode) ?: TileMode.Clamp
+    tileMode = attributeOrNull(ANDROID_NS, "tileMode")?.let(::parseTileMode) ?: TileMode.Clamp,
 )
 
 private fun Element.parseRadialGradient() = Brush.radialGradient(
     colorStops = parseColorStops(),
     center = Offset(
         attributeOrNull(ANDROID_NS, "centerX")?.toFloat() ?: 0f,
-        attributeOrNull(ANDROID_NS, "centerY")?.toFloat() ?: 0f
+        attributeOrNull(ANDROID_NS, "centerY")?.toFloat() ?: 0f,
     ),
     radius = attributeOrNull(ANDROID_NS, "gradientRadius")?.toFloat() ?: 0f,
-    tileMode = attributeOrNull(ANDROID_NS, "tileMode")?.let(::parseTileMode) ?: TileMode.Clamp
+    tileMode = attributeOrNull(ANDROID_NS, "tileMode")?.let(::parseTileMode) ?: TileMode.Clamp,
 )
 
 private fun Element.parseSweepGradient() = Brush.sweepGradient(
@@ -197,7 +191,7 @@ private fun Element.parseSweepGradient() = Brush.sweepGradient(
     center = Offset(
         attributeOrNull(ANDROID_NS, "centerX")?.toFloat() ?: 0f,
         attributeOrNull(ANDROID_NS, "centerY")?.toFloat() ?: 0f,
-    )
+    ),
 )
 
 private fun Element.parseColorStops(): Array<Pair<Float, Color>> {
@@ -257,14 +251,15 @@ private fun Element.attributeOrNull(namespace: String, name: String): String? {
  */
 private fun Element.apptAttr(
     namespace: String,
-    name: String
+    name: String,
 ): Element? {
     val prefix = lookupPrefix(namespace)
     return childrenSequence
         .filterIsInstance<Element>()
         .find {
-            it.namespaceURI == AAPT_NS && it.localName == "attr" &&
-                    it.getAttribute("name") == "$prefix:$name"
+            it.namespaceURI == AAPT_NS &&
+                it.localName == "attr" &&
+                it.getAttribute("name") == "$prefix:$name"
         }
 }
 

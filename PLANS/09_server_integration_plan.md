@@ -1,6 +1,6 @@
 # Plan: Mobile App & Server Integration (Task Tracker) - Iterative Approach
 
-**Goal:** Establish communication between the Compose Multiplatform app and the Ktor server using 
+**Goal:** Establish communication between the Compose Multiplatform app and the Ktor server using
 the existing `shared` module models, moving from an in-memory server to a persistent SQLite backend.
 
 ## ✅ Phase 1: Shared Model Integration (DONE)
@@ -23,7 +23,7 @@ the existing `shared` module models, moving from an in-memory server to a persis
 *Target: `composeApp/` - Integration with existing Ktor Client*
 
 1.  **Repository Update:** Modify `LocalTaskRepository` (or the relevant data layer) to call the `RemoteTaskDataSource` (using the already configured Ktor client) during any write/read operation.
-2.  **Flow Verification:** 
+2.  **Flow Verification:**
     *   Trigger a task creation in the UI.
     *   Monitor server logs to confirm the `POST` request arrived.
     *   Verify that the task is visible in the `GET /api/tasks` response.

@@ -27,18 +27,20 @@ fun main() {
 
 fun Application.module() {
     install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-            isLenient = true
-            ignoreUnknownKeys = true
-        })
+        json(
+            Json {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true
+            },
+        )
     }
 
     routing {
         get("/") {
             call.respondText("Ktor: ${Greeting().greet()}")
         }
-        
+
         get("/api/ping") {
             call.respondText("pong", status = HttpStatusCode.OK)
         }

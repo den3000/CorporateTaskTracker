@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
-    
+
     // Вставка или обновление (если ID совпадает)
     @Upsert
     suspend fun upsertTask(task: TaskEntity)

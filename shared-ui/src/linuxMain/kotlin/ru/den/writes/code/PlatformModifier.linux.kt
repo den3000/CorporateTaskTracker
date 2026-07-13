@@ -24,10 +24,11 @@ private fun forceFetchKbdHeight(): Flow<Int> = flow {
 actual fun Modifier.fillMaxSizeModifierWithKbdHandling(): Modifier = composed {
     val kbdHeight by remember { forceFetchKbdHeight().distinctUntilChanged() }.collectAsState(0)
     val windowHeight = LocalWindowInfo.current.containerSize.height
-    val fraction = if (kbdHeight in 1 until windowHeight)
+    val fraction = if (kbdHeight in 1 until windowHeight) {
         (windowHeight - kbdHeight).toFloat() / windowHeight
-    else
+    } else {
         1.0f
+    }
 
     this
         .fillMaxWidth()

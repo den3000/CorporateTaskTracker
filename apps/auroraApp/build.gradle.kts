@@ -4,7 +4,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     id("org.jetbrains.compose")
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.auroraBuildTools)
+    id("ru.auroraos.kmp.aurora-build")
+    id("ru.auroraos.kmp.aurora-devices")
 }
 
 // IP Aurora-устройства для деплоя по SSH.
@@ -19,28 +20,45 @@ val auroraDeviceIp: String = run {
         ?: "192.168.0.22"
 }
 
-buildTools {
-    rpm {
-        id = "ru.den.writes.code.corporate_task_tracker"
-        name = "Corporate Task Tracker"
-        description = "Corpora Task Tracker built with KMP for Aurora OS"
-        version = "0.0.1"
-        permissions = listOf("Internet")
-        libs3rdParty = listOf("maliit-glib")
-        icons = projectDir.toPath().resolve("icons")
-        // Ресурсы Compose генерируются в :shared-ui.
-        resources = rootProject.projectDir
-            .resolve("shared-ui/build/generated/compose/resourceGenerator/preparedResources/commonMain/composeResources")
-            .toPath()
-    }
+// Пустой guard-каталог composeResources обязан существовать: плагин compose
+// пакует ресурсы только из своего модуля. Реальный набор приходит через
+// customDirectory ниже; сам каталог держим ПУСТЫМ (без .gitkeep — дотфайл
+// ломает rpmbuild). Создаём на этапе конфигурации, без doFirst/захвата Project.
+layout.projectDirectory.dir("src/commonMain/composeResources").asFile.mkdirs()
 
-    // Run on device
-    run {
-        host = auroraDeviceIp
-        user = "defaultuser"
-        port = 22
-        validate = true
-        sshKey = File(System.getProperty("user.home")).resolve(".ssh/qtc_id").toPath()
+auroraBuild {
+    rpm {
+        id.set("ru.den.writes.code.corporate_task_tracker")
+        name.set("Corporate Task Tracker")
+        description.set("Corporate Task Tracker built with KMP for Aurora OS")
+        version.set("0.0.1")
+        permissions.set(listOf("Internet"))
+        libs3rdParty.set(listOf("maliit-glib"))
+        icons.set(projectDir.toPath().resolve("icons"))
+        // ВАЖНО: свойства `resources` у плагина нет — ресурсы приходят через
+        // compose.resources.customDirectory (см. ниже), плагин пакует
+        // preparedResources этого модуля.
+    }
+}
+
+auroraDevices {
+    devices {
+        // Без имени → устройство `device`, таск деплоя = runReleaseOnDevice.
+        create {
+            host.set(auroraDeviceIp)
+            user.set("defaultuser")
+            port.set(22)
+            sshKey.set(File(System.getProperty("user.home")).resolve(".ssh/qtc_id").toPath())
+        }
+    }
+    packages {
+        create("release") {
+            targets.set(listOf("aarch64", "x86_64"))
+            directory.set(
+                layout.buildDirectory.dir("rpm/release/{target}/RPMS/{target}").get().asFile.toPath(),
+            )
+            mask.set("""(?!.*debug).*\.rpm""")
+        }
     }
 }
 
@@ -52,17 +70,16 @@ kotlin {
 
     listOf(
         linuxArm64(),
-        linuxX64()
+        linuxX64(),
     ).forEach { target ->
         target.binaries {
             executable {
                 entryPoint = "ru.den.writes.code.main"
-                linkerOpts.addAll(buildTools.cmpLinkerOpts(
-                    project = project,
-                    targetName = target.name,
-                    "Qt5Core",
-                    "Qt5Network",
-                ))
+                // Обязателен: -Xoverride-konan-properties (иначе линковка против sysroot падает).
+                freeCompilerArgs += auroraBuild.freeCompilerArgs(target.name)
+                // cmpLinkerOpts сам добавляет Qt5Core/maliit/skiko/wayland/EGL/dbus,
+                // Qt5Network (для ktor-curl) передаём явно.
+                linkerOpts.addAll(auroraBuild.cmpLinkerOpts(target.name, "Qt5Network"))
             }
         }
     }
@@ -70,16 +87,33 @@ kotlin {
     sourceSets {
         linuxMain.dependencies {
             implementation(projects.sharedUi)
-            implementation(projects.compResAuroraCompat)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
 
+            // LocalViewModelStoreOwner / ViewModelStore для корневого owner в Main.kt.
+            // :shared-ui тянет его как implementation — наружу не виден.
+            implementation(libs.aurora.lifecycle.viewmodelCompose)
+
             implementation(libs.aurora.akPathInfo)
             implementation(libs.ktor.client.curl)
         }
     }
+}
+
+compose.resources {
+    // Res-класс генерирует :shared-ui, здесь только упаковка ресурсов.
+    generateResClass = never
+    // Плагин aurora-build пакует preparedResources ИМЕННО этого модуля (зависимости не
+    // видит), поэтому направляем на ресурсы :shared-ui (Android Vector Drawable — их
+    // рендерит appVectorPainter через собственный XML→ImageVector парсер).
+    customDirectory(
+        sourceSetName = "commonMain",
+        directoryProvider = provider {
+            rootProject.layout.projectDirectory.dir("shared-ui/src/commonMain/composeResources")
+        },
+    )
 }
 
 apply(from = "aurora-tasks.gradle.kts")

@@ -16,17 +16,17 @@ import ru.den.writes.code.ui.tasks.TaskListScreen
 fun AppNavigation(
     navController: NavHostController,
     settingsViewModel: SettingsViewModel,
-    isDarkTheme: Boolean
+    isDarkTheme: Boolean,
 ) {
     NavHost(
         navController = navController,
-        startDestination = TaskListRoute
+        startDestination = TaskListRoute,
     ) {
         composable<TaskListRoute> {
             TaskListScreen(
                 onNavigateToTask = { taskId ->
                     navController.navigate(TaskDetailRoute(taskId))
-                }
+                },
             )
         }
 
@@ -36,7 +36,7 @@ fun AppNavigation(
                 viewModel = koinViewModel { parametersOf(route.taskId) },
                 onBack = {
                     navController.popBackStack()
-                }
+                },
             )
         }
 

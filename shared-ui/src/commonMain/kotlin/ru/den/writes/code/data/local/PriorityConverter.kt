@@ -5,12 +5,8 @@ import ru.den.writes.code.domain.model.TaskPriority
 
 class PriorityConverter {
     @TypeConverter
-    fun fromPriority(priority: TaskPriority): String {
-        return priority.name
-    }
+    fun fromPriority(priority: TaskPriority): String = priority.name
 
     @TypeConverter
-    fun toPriority(name: String): TaskPriority {
-        return TaskPriority.valueOf(name)
-    }
+    fun toPriority(name: String): TaskPriority = TaskPriority.valueOf(name)
 }

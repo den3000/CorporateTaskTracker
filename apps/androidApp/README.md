@@ -13,8 +13,8 @@ Thin **Android application** (`com.android.application`) that hosts the shared U
 ```bash
 ./gradlew :androidApp:assembleDebug
 ```
-Only built in the **upstream** variant (`compose.aurora.enabled=false`, the default); it is excluded
-from the Gradle build when the Aurora variant is active.
+Only built in the **upstream** variant (the default, `buildVariant` unset); it is excluded
+from the Gradle build when the Aurora variant (`-PbuildVariant=aurora`) is active.
 
 ## Notes
 

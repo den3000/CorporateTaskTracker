@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 enum class TaskPriority {
     LOW,
     MEDIUM,
-    HIGH
+    HIGH,
 }

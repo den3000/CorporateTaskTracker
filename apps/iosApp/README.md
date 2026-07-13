@@ -24,5 +24,5 @@ The framework baseName is **`ComposeApp`** (Swift does `import ComposeApp`) — 
 
 - Entry symbol is `MainViewController()` in `shared-ui/src/iosMain`.
 - Only builds in the **upstream** variant; the framework task does not exist under the Aurora fork,
-  so ensure `compose.aurora.enabled=false` (the committed default) when building for iOS.
+  so leave `buildVariant` unset (the default) when building for iOS — don't pass `-PbuildVariant=aurora`.
 - `Configuration/Config.xcconfig.template` holds bundle-id / signing config.

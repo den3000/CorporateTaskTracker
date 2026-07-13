@@ -67,26 +67,26 @@ val LightColors = lightColorScheme(
     onPrimary = OnPrimaryColor,
     primaryContainer = PrimaryContainerColor,
     onPrimaryContainer = OnPrimaryContainerColor,
-    
+
     secondary = SecondaryColor,
     onSecondary = OnSecondaryColor,
     secondaryContainer = SecondaryContainerColor,
     onSecondaryContainer = OnSecondaryContainerColor,
-    
+
     tertiary = TertiaryColor,
     onTertiary = OnTertiaryColor,
     tertiaryContainer = TertiaryContainerColor,
     onTertiaryContainer = OnTertiaryContainerColor,
-    
+
     error = ErrorColor,
     onError = OnErrorColor,
     errorContainer = ErrorContainerColor,
     onErrorContainer = OnErrorContainerColor,
-    
+
     background = BackgroundLight,
     onBackground = OnBackgroundLight,
     surface = SurfaceLight,
-    onSurface = OnSurfaceLight
+    onSurface = OnSurfaceLight,
 )
 
 val DarkColors = darkColorScheme(
@@ -94,24 +94,24 @@ val DarkColors = darkColorScheme(
     onPrimary = OnPrimaryDark,
     primaryContainer = PrimaryContainerDark,
     onPrimaryContainer = OnPrimaryContainerDark,
-    
+
     secondary = SecondaryDark,
     onSecondary = OnSecondaryDark,
     secondaryContainer = SecondaryContainerDark,
     onSecondaryContainer = OnSecondaryContainerDark,
-    
+
     tertiary = TertiaryDark,
     onTertiary = OnTertiaryDark,
     tertiaryContainer = TertiaryContainerDark,
     onTertiaryContainer = OnTertiaryContainerDark,
-    
+
     error = ErrorDark,
     onError = OnErrorDark,
     errorContainer = ErrorContainerDark,
     onErrorContainer = OnErrorContainerDark,
-    
+
     background = BackgroundDark,
     onBackground = OnBackgroundDark,
     surface = SurfaceDark,
-    onSurface = OnSurfaceDark
+    onSurface = OnSurfaceDark,
 )

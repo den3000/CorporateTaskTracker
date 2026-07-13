@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jetbrains.compose.resources.vector
+package ru.den.writes.code.vectorxml
 
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.StrokeCap
@@ -28,6 +28,7 @@ private const val ALPHA_MASK = 0xFF000000.toInt()
 
 // parseColorValue is copied from Android:
 // https://cs.android.com/android-studio/platform/tools/base/+/05fadd8cb2aaafb77da02048c7a240b2147ff293:sdk-common/src/main/java/com/android/ide/common/vectordrawable/VdUtil.kt;l=58
+
 /**
  * Parses a color value in #AARRGGBB format.
  *
@@ -91,7 +92,7 @@ internal fun parseTileMode(tileMode: String): TileMode = when (tileMode) {
     "clamp" -> TileMode.Clamp
     "repeated" -> TileMode.Repeated
     "mirror" -> TileMode.Mirror
-    else -> throw throw UnsupportedOperationException("unknown tileMode: $tileMode")
+    else -> throw UnsupportedOperationException("unknown tileMode: $tileMode")
 }
 
 internal fun String?.parseDp(density: Density): Dp = with(density) {

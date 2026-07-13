@@ -26,9 +26,12 @@ android-targetSdk = "36"
 
 # Aurora
 akPathInfo="0.0.1"
-auroraBuildTools = "0.0.1"
 spotless="7.0.3"
-ktor-aurora = "3.1.2-aurora"
+ktor-aurora = "3.4.2-aurora"
+# Форк Koin под Аврору
+koinAurora = "4.2.0-aurora"
+# Форк androidx-lifecycle под Аврору (sentinel-версия форка)
+auroraCompose = "9999.0.0-SNAPSHOT"
 
 # Other
 junit = "4.13.2"
@@ -77,6 +80,13 @@ ktor-client-curl = { module = "io.ktor:ktor-client-curl", version.ref = "ktor-au
 
 # Aurora
 aurora-akPathInfo = { module = "ru.auroraos.kmp:ak-path-info", version.ref = "akPathInfo" }
+# Koin-форк под Аврору (заменяет полифил koinCompat)
+aurora-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinAurora" }
+aurora-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinAurora" }
+aurora-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinAurora" }
+# Lifecycle-форк под Аврору
+aurora-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "auroraCompose" }
+aurora-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "auroraCompose" }
 
 # Other
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
@@ -108,7 +118,8 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 
 # Aurora
-auroraBuildTools = { id = "ru.auroraos.kmp.buildtools", version.ref = "auroraBuildTools" }
+# Плагины aurora-build / aurora-devices подключаются напрямую в settings.gradle.kts
+# по варианту сборки (buildVariant=aurora), поэтому alias'ов здесь нет.
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 # For reference only

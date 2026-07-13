@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
             App(
                 koinConfig = {
                     androidContext(applicationContext)
-                }
+                },
             )
         }
     }
