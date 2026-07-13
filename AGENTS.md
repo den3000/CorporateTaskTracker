@@ -53,7 +53,7 @@ Because the plugin set is chosen **once, globally per Gradle invocation**:
 - **`:shared-ui` has two separate build files** — `build.gradle.kts` (upstream: android/ios,
   `libs.compose.*` Maven, `libs.koin.*`, `libs.navigation.compose`) and `build.aurora.gradle.kts`
   (aurora: linuxArm64/linuxX64, `compose.*` fork accessors incl. `compose.navigation`, aurora
-  koin/lifecycle forks). No in-file `auroraEnabled` conditional anymore.
+  koin/lifecycle forks). Each build file is self-contained — no in-file variant conditionals.
 
 **Where the Aurora fork resolves from.** `settings.gradle.kts` reads `auroraMavenPath` from
 `local.properties` (machine-specific, git-ignored). If set (e.g. `auroraMavenPath=../aurora-maven-0.0.4`,
@@ -94,7 +94,7 @@ SSH to `AURORA_DEVICE_IP` (see `NETWORK_CONFIG_README.md`). Only compile-only is
    (magic bytes, so no path/extension is needed): PNG/JPEG/WebP/BMP → `BitmapPainter` (raster), `<svg>` →
    Skia SVGDOM painter, otherwise Android vector XML → an `ImageVector` via the vendored parser in
    `shared-ui/src/linuxMain/.../vectorxml/` (`parse` + `toImageVector` + `ValueParser`, pure Kotlin,
-   device-proven since the 0.0.3 era). For vectors the result is an `ImageVector`, so `Icon(tint = …)`
+   AOSP-derived). For vectors the result is an `ImageVector`, so `Icon(tint = …)`
    and intrinsic dp sizes work normally (incl. dark theme); SVG colors are baked (tint doesn't apply,
    same as the fork's own SVG painter).
    **Packaging:** the `aurora-build` plugin only packages the resources of **its own** module,
@@ -109,13 +109,11 @@ SSH to `AURORA_DEVICE_IP` (see `NETWORK_CONFIG_README.md`). Only compile-only is
    the pbxproj embed refs depend on it. The pbxproj "Compile Kotlin Framework" phase runs
    `cd "$SRCROOT/../.."` (repo root) then `./gradlew :shared-ui:embedAndSignAppleFrameworkForXcode`.
    The iOS build only works with the upstream variant — the framework task doesn't exist under the fork.
-4. **Two small Aurora polyfills remain.** `shared-ui/src/previewStub` (a no-op `@Preview` annotation —
-   the fork ships `ui-tooling-preview` only for jvm/android), and `shared-ui/src/linuxMain/.../vectorxml`
+4. **Two small Aurora polyfills exist.** `shared-ui/src/previewStub` (a no-op `@Preview` annotation —
+   the fork ships `ui-tooling-preview` only for jvm/android) and `shared-ui/src/linuxMain/.../vectorxml`
    (Android-vector-XML → `ImageVector` parser, because the fork's `components-resources` renders SVG
-   only — see invariant #1). Everything else now uses **real fork libraries**: Koin `4.2.0-aurora` (was
-   the `koinCompat` source dir), `compose.navigation` DSL accessor (was a reflection hack), and
-   `components-resources` (was the whole `:compResAuroraCompat` module — only its vector-XML parser was
-   kept). Do not reintroduce the dropped polyfills.
+   only — see invariant #1). Everything else uses **real fork libraries**: Koin `4.2.0-aurora`, the
+   `compose.navigation` DSL accessor, and `components-resources`.
 5. **Room KSP stays entirely in `:shared-ui`** (the only module declaring android/ios/linux targets).
    App modules declare no targets and no KSP.
 
@@ -145,9 +143,9 @@ These only bite on Aurora (its Main dispatcher is stricter); Android/iOS are una
    The two have the same signature, so call sites read canonically; the difference is the import. The
    polyfill keeps Android/iOS on the native painter and routes Aurora through the vector-XML parser (see
    invariant #1), so the fork's SVG-only loader never sees a drawable. The resulting `ImageVector`
-   honours `Icon(tint = …)` and intrinsic dp sizes (the `.size(24.dp)` modifiers on the icons are now
-   belt-and-suspenders, not load-bearing). On Aurora the read is async; a transparent 24dp placeholder
-   shows for ~1 frame while the vector loads.
+   honours `Icon(tint = …)` and intrinsic dp sizes (the `.size(24.dp)` modifiers on the icons are
+   belt-and-suspenders — the `ImageVector` already carries the intrinsic 24dp size). On Aurora the read
+   is async; a transparent 24dp placeholder shows for ~1 frame while the vector loads.
 
 ## Entry points
 

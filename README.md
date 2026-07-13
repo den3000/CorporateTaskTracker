@@ -23,8 +23,29 @@ Compose, переиспользуя код Android/iOS.
 > Код **ровно в том виде, в каком он был на докладе** (форк `0.0.3-aurora`, флаг
 > `compose.aurora.enabled`, полный набор полифилов, монолитный `buildtools`-плагин) сохранён в
 > коммите [`7e8e70d`](https://github.com/den3000/CorporateTaskTracker/tree/7e8e70d)
-> (ветка `feature/aurora-compose-0.0.3-stable`). Что именно поменялось при миграции — см.
-> [AGENTS.md](AGENTS.md).
+> (ветка `feature/aurora-compose-0.0.3-stable`). Что именно поменялось — в таблице ниже; как
+> работать с проектом в текущем состоянии — [AGENTS.md](AGENTS.md).
+
+<details>
+<summary><b>Что изменилось при переезде <code>0.0.3-aurora</code> → <code>0.0.4-aurora</code></b></summary>
+
+| Было (0.0.3, доклад) | Стало (0.0.4, сейчас) |
+| --- | --- |
+| Флаг `compose.aurora.enabled` | Свойство `buildVariant` (`-PbuildVariant=aurora`) |
+| Форк `org.jetbrains.compose 0.0.3-aurora` | `0.0.4-aurora` |
+| Монолитный плагин `ru.auroraos.kmp.buildtools` | Раздельные `aurora-build` + `aurora-devices` `0.0.1` |
+| `:shared-ui` — один build-файл с ветками `auroraEnabled` | Два файла: `build.gradle.kts` (upstream) / `build.aurora.gradle.kts` (Аврора) |
+| Полифил Koin (`shared-ui/src/koinCompat`) | Настоящий форк Koin `4.2.0-aurora` |
+| Навигация через reflection-хак (`getMethod("getNavigation")`) | DSL-аксессор `compose.navigation` |
+| Модуль-полифил ресурсов `:compResAuroraCompat` | Настоящий `components-resources`; от полифила остался только парсер Android-vector-XML как drop-in `painterResource` (форк рендерит лишь SVG) |
+| Контракт суффикса `.generated.resources` (по нему полифил находил файл) | `customDirectory` + пустой guard-каталог; иконки — тот же XML |
+| `ktor-client-curl 3.1.2-aurora` | `3.4.2-aurora` |
+| Таск `appRunReleaseAfterBuild` и цепочка враппер-тасков | `buildReleasePipeline` / `runReleaseOnDevice` (из плагинов) |
+
+Из полифилов остались только **`previewStub`** (заглушка `@Preview`) и **парсер vector-XML**.
+Полный технический разбор текущего состояния — в [AGENTS.md](AGENTS.md).
+
+</details>
 
 ## Что можно посмотреть в коде
 
