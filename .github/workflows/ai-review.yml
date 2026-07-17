@@ -1,0 +1,110 @@
+name: AI review
+
+# Открытие PR (и каждый пуш в него) запускает ревьюера. Ассистент живёт в соседнем
+# публичном репозитории den3000/Project01 — он собирается здесь же, без секретов,
+# и получает ключ переменной окружения только на шагах запуска.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    # PR из форка не получает секретов, а GITHUB_TOKEN там read-only — ревьюер молча
+    # не смог бы ни сходить в модель, ни оставить комментарий. Честнее не запускаться.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    env:
+      # Два чекаута лежат рядом, а не вложенно: индексатор обходит папку целиком и
+      # утащил бы в индекс исходники самого ассистента, окажись он внутри.
+      REPO_DIR: ${{ github.workspace }}/repo
+      ASSISTANT_DIR: ${{ github.workspace }}/assistant
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          path: repo
+          # Нужна история: diff считается от базового коммита PR, а не от рабочего дерева.
+          fetch-depth: 0
+
+      - name: Checkout assistant
+        uses: actions/checkout@v4
+        with:
+          repository: den3000/Project01
+          ref: main
+          path: assistant
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          build-root-directory: assistant
+
+      # Секретов на этом шаге нет: BuildKonfig запечёт пустые ключи, и это нормально —
+      # ключ придёт переменной окружения на запуске (см. resolveKey в AppModule.kt).
+      - name: Build assistant (no secrets)
+        working-directory: assistant
+        run: ./gradlew --no-daemon :agenticHubClient:apps:cliJvmApp:installDist :playground:git-mcp:installDist
+
+      - name: Index docs and code into RAG
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          "$ASSISTANT_DIR/agenticHubClient/apps/cliJvmApp/build/install/cliJvmApp/bin/cliJvmApp" \
+            -rag add ctt src "$REPO_DIR" embedder gemini
+
+      - name: Review the diff
+        working-directory: repo
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          CLI="$ASSISTANT_DIR/agenticHubClient/apps/cliJvmApp/build/install/cliJvmApp/bin/cliJvmApp"
+          GITMCP="$ASSISTANT_DIR/playground/git-mcp/build/install/git-mcp/bin/git-mcp"
+
+          # Список изменённых файлов уходит в промпт не для модели (её дело — вызвать
+          # инструменты), а ради RAG: retrieval ищет по тексту промпта, и без реальных
+          # путей вытаскивает случайные общие куски документации вместо релевантных.
+          PROMPT="$(cat .github/ai-review-prompt.md)
+
+          Изменённые файлы этого PR:
+          $(git diff --name-only "$BASE_SHA"...HEAD)"
+
+          # -rag грузит индекс ДО первого хода, поэтому вопрос задаётся одним -prompt,
+          # а stdin нужен только чтобы выйти. Иначе RAG не успел бы активироваться.
+          "$CLI" -prompt "$PROMPT" \
+            -rag ctt \
+            -agent provider gemini \
+            -mcpServer "$GITMCP $REPO_DIR $BASE_SHA" <<< "/exit" > review.out 2> review.err || true
+
+          echo "::group::assistant stderr"; cat review.err; echo "::endgroup::"
+
+          # stdout несёт tool-раунды (весь diff!), затем ответ, затем футер телеметрии.
+          # Режем футер по строке ровно из 72 '<' (маркер конфликта в diff под шаблон не
+          # подходит), затем берём от ПОСЛЕДНЕГО заголовка ревью — последнего, потому что
+          # такой же текст мог приехать внутри самого diff.
+          sed '/^<\{72\}$/,$d' review.out > review.body
+          START=$(grep -n '^## Потенциальные баги' review.body | tail -1 | cut -d: -f1)
+          if [ -n "$START" ]; then
+            tail -n +"$START" review.body > review.md
+          else
+            echo "Ревьюер не вернул ожидаемый формат — см. логи шага." >&2
+            {
+              echo "## AI-ревью не удалось"
+              echo
+              echo "Ассистент не вернул ответ в ожидаемом формате. Подробности — в логах Action."
+            } > review.md
+          fi
+
+      - name: Post review as a PR comment
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr comment "${{ github.event.number }}" -R "${{ github.repository }}" --body-file review.md
