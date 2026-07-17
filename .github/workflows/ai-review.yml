@@ -43,9 +43,9 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      # Кэш Gradle + валидация wrapper'а. Корень сборки не задаётся: у setup-gradle@v4
+      # такого входа нет (он был в v3), а сам gradlew запускается ниже из assistant/.
       - uses: gradle/actions/setup-gradle@v4
-        with:
-          build-root-directory: assistant
 
       # Секретов на этом шаге нет: BuildKonfig запечёт пустые ключи, и это нормально —
       # ключ придёт переменной окружения на запуске (см. resolveKey в AppModule.kt).
@@ -61,6 +61,7 @@ jobs:
             -rag add ctt src "$REPO_DIR" embedder gemini
 
       - name: Review the diff
+        id: review
         working-directory: repo
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -79,10 +80,15 @@ jobs:
 
           # -rag грузит индекс ДО первого хода, поэтому вопрос задаётся одним -prompt,
           # а stdin нужен только чтобы выйти. Иначе RAG не успел бы активироваться.
+          # Падение ассистента не роняет шаг здесь и сейчас: комментарий всё равно надо
+          # опубликовать. Но код возврата запоминается — по нему джоба покраснеет ниже,
+          # иначе сломанный ревьюер выглядел бы как «замечаний нет».
+          CLI_STATUS=0
           "$CLI" -prompt "$PROMPT" \
             -rag ctt \
             -agent provider gemini \
-            -mcpServer "$GITMCP $REPO_DIR $BASE_SHA" <<< "/exit" > review.out 2> review.err || true
+            -mcpServer "$GITMCP $REPO_DIR $BASE_SHA" <<< "/exit" > review.out 2> review.err || CLI_STATUS=$?
+          echo "cli-status=$CLI_STATUS" >> "$GITHUB_OUTPUT"
 
           echo "::group::assistant stderr"; cat review.err; echo "::endgroup::"
 
@@ -108,3 +114,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr comment "${{ github.event.number }}" -R "${{ github.repository }}" --body-file review.md
+
+      # Комментарий уже опубликован — теперь можно ронять джобу. Зелёный чек при
+      # свалившемся ассистенте читался бы как «ревью прошло, замечаний нет».
+      - name: Fail if the assistant errored
+        if: steps.review.outputs.cli-status != '0'
+        run: |
+          echo "Ассистент завершился с кодом ${{ steps.review.outputs.cli-status }} — ревью в комментарии неполное или отсутствует." >&2
+          exit 1
